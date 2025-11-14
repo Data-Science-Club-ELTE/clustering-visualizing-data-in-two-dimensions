@@ -1,5 +1,8 @@
 # Clustering and Visualizing Data in 2D
 
+> [!WARNING]
+> To be updated!
+
 A project explored in [Data Science Club at ELTE](https://datasciencelte.netlify.app), 2025.
 
 Coordinated by Matthew Balogh (✉️ matebalogh@student.elte.hu, 🐙 [matthew-balogh](https://github.com/matthew-balogh))
@@ -31,9 +34,6 @@ If you were to receive newsletter e-mails that you had subscribed to, you may wa
 3. Participants who show dedication to the project and are interested in the visualization of clustering results of high-dimensional data will have the opportunity to contribute to a new visualization method.
 
 ## What will you learn from the project?
-
-> [!TIP] As a Beginner you will get:
-> asd
 
 - introduced to *Unsupervised Learning*
 - introduced to *Clustering*

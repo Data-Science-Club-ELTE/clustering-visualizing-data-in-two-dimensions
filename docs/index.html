@@ -52,8 +52,8 @@
           <h2 class="hero-title">I. Background</h2>
           <div id="dsPipelineSection"></div>
           <div class="image-container">
-            <img src="../theory/_images/ds-pipeline-1.png" width="600px" alt="" />
-            <img src="../theory/_images/ds-pipeline-2.png" width="1000px" alt="" />
+            <img src="assets/ds-pipeline-1.png" width="600px" alt="" />
+            <img src="assets/ds-pipeline-2.png" width="1000px" alt="" />
           </div>
           <div id="supUnsupLearningSection"></div>
           <div id="representationLearningSection"></div>
@@ -81,7 +81,7 @@
     };
 
     Object.entries(targets).forEach(([id, file]) => {
-      fetch(`../theory/${file}`)
+      fetch(`./theory/${file}`)
         .then((r) => r.text())
         .then((md) => {
           document.getElementById(id).innerHTML = marked.parse(md);

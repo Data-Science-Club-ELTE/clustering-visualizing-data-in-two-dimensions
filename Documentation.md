@@ -23,6 +23,8 @@ And we will use 2D visualizations to **explore**, **understand** and **explain**
 
 ### General Data Science pipeline
 
+![](_images/ds-pipeline-1.png)
+
 #### 1. Define and understand the problem
 
 The problem needs to be clearly defined and then turned into a Data Science task, so clear steps can be defined on how to solve it.
@@ -50,6 +52,8 @@ The trained model is evaluated on never before seen samples that we refer to as 
 #### 7. Deployment and refinement
 
 In this stage models get deployed, observed and refinements are initiated to start the cycle again.
+
+![](_images/ds-pipeline-2.png)
 
 ### Supervision in Machine Learning
 

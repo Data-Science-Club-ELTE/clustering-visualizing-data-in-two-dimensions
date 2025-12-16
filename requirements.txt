@@ -5,3 +5,5 @@ matplotlib
 scikit-learn
 ipykernel
 jupyter
+minisom
+git+https://github.com/matthew-balogh/lilypond@experimental

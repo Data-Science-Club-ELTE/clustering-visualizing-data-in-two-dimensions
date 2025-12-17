@@ -16,15 +16,6 @@ Our analysis will be accompanied by visualizations whether it is related to simp
 
 Also, by visiting the above mentioned steps, we expect that by the end of the project we will have both theoretical knowledge and practical experience in the field of *Representation Learning*.
 
-## Instructions to run the notebooks
-
-```bash
-# 1. install required libraries
-pip install -r requirements.txt
-
-# 2. Run a selected `.ipynb` notebook from the project
-```
-
 ## Documentation
 
 Background information and experimental details are recorded in [Documentation.md](./Documentation.md).
@@ -52,3 +43,25 @@ The related dataset and its brief exploration can be found in the [penguins.ipyn
 | Encoding categorical variables |   ✅    |
 | Scaling the data               |   ✅    |
 | Dimensionality reduction       |   -    |
+
+As for the main practical tasks:
+
+| Task                                               | Status |
+| :------------------------------------------------- | :----: |
+| Clustering with _K-Means_                          |   ✅   |
+| Evaluate _K-Means_ clustering against true labels  |   ✅   |
+| Representation learning with _SOM_                 |   ⏳   |
+| Clustering via _SOM_ representation                |   ⏳   |
+| Evaluate _SOM_ clustering against true labels      |   ⏳   |
+| Compare _K-Means_ and _SOM_ performance            |   ⏳   |
+| Enhance the visualization of _SOM_ map             |   ⏳   |
+| Investigate metrics that could drive a better representation / clustering |   ?   |
+
+## For contributors
+
+```bash
+# 1. install required libraries
+pip install -r requirements.txt
+
+# 2. Run a selected `.ipynb` notebook from the project
+```

@@ -6,3 +6,4 @@ scikit-learn
 ipykernel
 jupyter
 minisom
+pyswarms

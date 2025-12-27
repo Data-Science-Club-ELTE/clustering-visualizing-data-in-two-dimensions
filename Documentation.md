@@ -168,3 +168,34 @@ learning instead of error correction which is *Self-Organizing Map (SOM)*.
 ## V. Self-Organizing Maps (SOM)
 
 <!-- TODO -->
+
+## VI. Experiments
+
+### Dataset
+
+The `Palmer penguins` dataset was used during the experiments obtained from the `palmerpenguins` python library. The original shape of the dataset is 344 observations and 8 features, both categorical and numerical.
+
+### Preprocessing
+
+The dataset was limited to the 4 numerical features of `bill_length_mm`, `bill_depth_mm`, `flipper_length_mm` and `body_mass_g`. Observations with missing values in these features were dropped, resulting in a total of 342 records. The features of this dataset were standardized.
+
+### Clustering
+
+A `KMeans` estimator from the `sklearn` library was used to fit and cluster the data in its preprocessed four-dimensional space with a heuristic to separate 3 groups.
+
+To interpret the results, the data labeled by cluster ids was plotted in two-dimensional scatter plots, for all features, pairwise. Despite only a few dimensions, this resulted in 6 individual plots. Examples are included below.
+
+One important insight is that clusters do not separate clearly and there are regions where they overlap each other in the resulting plots, that may generate confusion in the observer. To resolve this, we list the reasons for this phenomenon:
+
+- Dataset itself **may not have clear separation** lines for the real groups: Clusters meet which can be amplified by the styling properties of the scatter plot such as the size of the marker
+- **Projection** from 4D to 2D **distorts** the **original structure**: In the original feature space those marked clusters may not overlap as they appear in the 2D collapsed view
+- **K-Means assumptions**: K-Means divides the data space into convex spherical clusters, that may lead to arbitrary separation lines that do not align with irregularly shaped clusters
+
+
+![](./_images/experiments/clustering_1.png)
+
+![](./_images/experiments/clustering_2.png)
+
+![](./_images/experiments/clustering_3.png)
+
+![](./_images/experiments/clustering_4.png)

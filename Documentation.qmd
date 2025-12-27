@@ -7,7 +7,7 @@ bibliography: references.bib
 
 header-includes:
   - \usepackage{titlesec}
-  - \titlespacing*{\subsection}{0pt}{3em}{1em}
+  - \titlespacing*{\subsection}{0pt}{1.5em}{1em}
 
 format:
   pdf:
@@ -15,7 +15,7 @@ format:
     documentclass: article
     fontsize: 11pt
     geometry: margin=1in
-    linestretch: 0.9
+    linestretch: 1
     cite-method: biblatex
   md: default
 ---
@@ -28,7 +28,6 @@ In this project, titled as *Clustering Data and Visualizing in 2D*, we aim to gr
 - General Data Science pipeline
 - Unsupervised learning
 - Representation learning
-- High-dimensional data characteristics
 - Neural networks,
 
 while from the practical aspect, we expect to get hands on experience in using K-means and Self-Organizing Map (SOM) algorithms. The diagram below provides a high level view on the topics covered in the project and how they build upon each other.
@@ -207,7 +206,7 @@ According to @geeksforgeeks_som, a Self-Organizing Map is an unsupervised neural
 \newpage
 ## Methodology
 
-1. Use *K-means* to cluster data points in their original $N$-dimensional space and visualize the cluster labeling in two-dimensional plots. Interpret the results, take notes of any strange patterns caused by the two-dimensional output, if there's any. Visually compare and evaluate the clustering against ground truth, and with the help of unsupervised metrics.
+1. Use *K-means* algorithm to cluster data points in their original $N$-dimensional space. Use the cluster assignments as membership predictions. Visualize the identified clusters in $2D$ feature plots, pairwise. Interpret the outputs, take notes of any strange patterns caused by the dimensionality collapse, if there's any. Visually compare the clustering against true labels. Evaluate the quality of clustering with the help of supervised and unsupervised metrics.
 
 2. Use *Self-Organizing Maps (SOM)* to learn a representation of the data that can be visualized in two dimensions through the organized and flattened grid of the SOM.
 
@@ -228,23 +227,38 @@ The `Palmer penguins` dataset was used during the experiments obtained from the 
 
 The dataset was limited to the 4 numerical features of `bill_length_mm`, `bill_depth_mm`, `flipper_length_mm` and `body_mass_g`. Observations with missing values in these features were dropped, resulting in a total of 342 records. The features of this dataset were standardized.
 
-### Clustering
+### Experiment 1: K-means clustering
 
-A `KMeans` estimator from the `sklearn` library was used to fit and cluster the data in its preprocessed four-dimensional space with a heuristic to separate 3 groups.
+The `KMeans` estimator from the `sklearn` library was used to fit and cluster the data in its preprocessed four-dimensional space with a heuristic to seek 3 groups. The identified clusters were plotted in two-dimensional scatter plots, for all features, pairwise as depicted in @fig-kmeans-01.
 
-To interpret the results, the data labeled by cluster ids was plotted in two-dimensional scatter plots, for all features, pairwise. Despite only a few dimensions, this resulted in 6 individual plots. Examples are included below.
+One important insight is that the identified clusters do not separate clearly and there are regions where they overlap each other in the two-dimensional plots.
 
-One important insight is that clusters do not separate clearly and there are regions where they overlap each other in the resulting plots, that may generate confusion in the observer. To resolve this, we list the reasons for this phenomenon:
+*Given the K-means algorithm segments the data space, why there are no clear separation lines and how come there are intermingling regions in the resulting plots?*
 
-- Dataset itself **may not have clear separation** lines for the real groups: Clusters meet which can be amplified by the styling properties of the scatter plot such as the size of the marker
-- **Projection** from 4D to 2D **distorts** the **original structure**: In the original feature space those marked clusters may not overlap as they appear in the 2D collapsed view
 - **K-Means assumptions**: K-Means divides the data space into convex spherical clusters, that may lead to arbitrary separation lines that do not align with irregularly shaped clusters
+- Dataset itself **may not have clear separation** lines for the real groups: these borders can appear intermingled which can be amplified by the styling properties of the scatter plot such as the size of the marker
+- **Projection** from $4D$ to $2D$ **distorts** the **original structure**: those regions that appear as intermingled in the collapsed space do not overlap in the original $N$-dimensional feature space
+
+Comparison of the identified clusters against ground truth labels are depicted in @fig-kmeans-02. The accuracy and quality of the clustering were assessed as included in @tbl-kmeans. Besides, it's worth mentioning that even this simple dataset with 4 features required 6 individual pairwise plots to observe the patterns from every angle.
+
+| Homogeneity | Completeness | V-measure | Accuracy |
+|------------:|-------------:|----------:|---------:|
+|       0.798 |        0.773 |     0.786 |    0.915 |
+
+: Performance evaluation of the *K-means* clustering. {#tbl-kmeans}
 
 
-![](./_images/experiments/clustering_1.png)
+![Clusters identified via the *K-means* algorithm.](./_images/experiments/kmeans_clustering_01.png){#fig-kmeans-01 width=85%}
 
-![](./_images/experiments/clustering_2.png)
+::: {#fig-kmeans-02 width=85%}
 
-![](./_images/experiments/clustering_3.png)
+![](./_images/experiments/kmeans_clustering_02_01.png){#fig-kmeans-02-01}
 
-![](./_images/experiments/clustering_4.png)
+![](./_images/experiments/kmeans_clustering_02_02.png){#fig-kmeans-02-02}
+
+![](./_images/experiments/kmeans_clustering_02_03.png){#fig-kmeans-02-03}
+
+Comparison of identified clusters and ground truth labels of penguin species. Only 3 pairwise plots out of the 6 are included here.
+:::
+
+\newpage

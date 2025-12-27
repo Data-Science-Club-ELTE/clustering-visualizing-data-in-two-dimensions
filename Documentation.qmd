@@ -1,59 +1,81 @@
-# Clustering Data and Visualizing in 2D
+---
+title: "Clustering Data and Visualizing in 2D"
+toc: true
+toc-depth: 1
+number-sections: true
+bibliography: references.bib
 
-## I. Project Overview
+header-includes:
+  - \usepackage{titlesec}
+  - \titlespacing*{\subsection}{0pt}{1.5em}{1em}
 
-![Overview of the project.](./_images/overview.png)
+format:
+  pdf:
+    latex-engine: xelatex
+    documentclass: article
+    fontsize: 11pt
+    geometry: margin=1in
+    linestretch: 1
+    cite-method: biblatex
+  md: default
+---
 
-In this project, from theoretical aspect, we will visit the following concepts:
+\newpage
+## Introduction
+
+In this project, titled as *Clustering Data and Visualizing in 2D*, we aim to group similar data points of a dataset together and then visualize *where* and *how* those groups separate from each other and explore what characterizes them. From a theoretical point of view, we plan to explore consepts such as:
 
 - General Data Science pipeline
 - Unsupervised learning
 - Representation learning
-- High-dimensional data characteristics
-- Neural networks
+- Neural networks,
 
-We will overview the algorithms of:
+while from the practical aspect, we expect to get hands on experience in using K-means and Self-Organizing Map (SOM) algorithms. The diagram below provides a high level view on the topics covered in the project and how they build upon each other.
 
-- *K-means*
-- *Self-Organizing Map (SOM)*
+Additionally, we will use 2D visualizations to **explore**, **understand** and **explain** **patterns** in the data. We will get hands on experience how unsupervised and representation learning works along with how to visualize high-dimensional data in a way that is interpretable for the human eye.
 
-And we will use 2D visualizations to **explore**, **understand** and **explain** **patterns** in the data. We will get hands on experience how unsupervised and representation learning works along with how to visualize high-dimensional data in a way that is interpretable for the human eye. At the end, we will connect how SOM relates to a neural network. With all the steps documented, we will end up with a **concise** and **comprehensive report** that you can refer to in the future, along with the possibility to share our results via certain channels of the *Data Science Club*.
+![Bird's eye view of the project.](./_images/overview.png)
 
-## II. Background
+\newpage
+## Background
 
 ### General Data Science pipeline
 
-![](_images/ds-pipeline-1.png)
+@fig-ds-pipeline-1 depicts the general workflow of Data Science while @fig-ds-pipeline-2 displays a broader view on the process. Elaboration of the main steps are as follows.
 
-#### 1. Define and understand the problem
+**Define and understand the problem**
 
 The problem needs to be clearly defined and then turned into a Data Science task, so clear steps can be defined on how to solve it.
 
-#### 2. Data collection
+**Data collection**
 
 In this step, it is important to collect the data that is suitable for the job. It is a good idea to collect more data than you need as data sets can be incomplete and dirty. Although, it is very important to highlight that the *quality* of the data is more important than the *quantity*.
 
-#### 3. Data cleaning and preprocessing
+**Data cleaning and preprocessing**
 
 Raw data can include missing entries, duplicates, extreme outliers to name a few. Un- or improperly processed data will lead to bad models.
 
-#### 4. Data exploration (EDA)
+**Data exploration (EDA)**
 
 In this phase—often referred to as *Exploratory Data Analysis*—characteristics of the dataset are summarized and visualized. It helps in understanding what the collected data tells us: answer questions right away, see patterns or anomalies that could guide in building a better model.
 
-#### 5. Model building
+**Model building**
 
-In this part, the preprocessed data is used to train a model that discoveres hidden patterns or learn from it in order to make predictions for the future.
+In this part, the preprocessed data is used to train a model that discovers hidden patterns or learn from it in order to make predictions for the future.
 
-#### 6. Evaluation
+**Evaluation**
 
-The trained model is evaluated on never before seen samples that we refer to as the test (or holdout) set, by whichwe can verify how well the model generalizes.
+The trained model is evaluated on never before seen samples that we refer to as the test (or holdout) set, by which we can verify how well the model generalizes.
 
-#### 7. Deployment and refinement
+**Deployment and refinement**
 
-In this stage models get deployed, observed and refinements are initiated to start the cycle again.
+In this stage, models get deployed, observed and refinements are initiated to start the cycle again.
 
-![](_images/ds-pipeline-2.png)
+![General pipeline of Data Science. Figure by @datascience_pm_workflow.](_images/ds-pipeline-1.png){#fig-ds-pipeline-1 width=80%}
+
+![Graphic summary of the Data Science Pipeline. Figure by @illinois_exploration.](_images/ds-pipeline-2.png){#fig-ds-pipeline-2}
+
+
 
 ### Supervision in Machine Learning
 
@@ -84,11 +106,11 @@ An autoencoder is a type of neural network architecture that is having three cor
 #### Prototype Learning
 Prototype learning is a family of methods where a model represents each class, cluster, or concept using prototypes—vectors in a learned feature space that act as representative examples. A model then makes predictions by comparing new samples to these prototypes. These prototypes provide an abstract representation for many natural categories and concepts.
 
-## III. K-means Clustering
+
+
+### K-means Clustering
 
 Clustering is an unsupervised machine learning technique that learns patterns from the features of a dataset without using labels. *K-means* is a simple algorithm that attempts to partition samples into $K$ groups with roughly equal variance, although the latter is not guaranteed.
-
-### Overview
 
 K-means clustering is prototype learning algorithm used to categorize n (usually vectors of unlabelled data) items into k number of clusters. It is useful for identifying natural groupings of data and structuring raw data. Determining what k should be is important for the segmentation to be meaningful and there are multiple methods for determining the optimal value for k. K-means has a variety of uses due to its simplicity and effectiveness, including data segmentation, image compression and anomaly detection.
 
@@ -96,7 +118,7 @@ K-means clustering is prototype learning algorithm used to categorize n (usually
 * "K-means" = "K averages" / "K central tendencies" / "K centroids"
 * Can be looked at as a prototyping tool that discretizes the data into $K$ prototypes
 
-### Algorithm in a nutshell
+#### Algorithm in a nutshell
 
 The algorithm will categorize the inputs into k clusters based on similarity. Measuring of similarity is done with the square of the Euclidean distance of the data vectors. Summarized, the algorithm works as follows:
 
@@ -105,7 +127,7 @@ The algorithm will categorize the inputs into k clusters based on similarity. Me
 3. Update: We recalculate the position of each centroid based on the average of the data points in each cluster.
 4. Repeat: We repeat this process until the position of each centroid is unchanged or we reach a pre-defined iteration limit
 
-### Algorithm in details
+#### Algorithm in details
 
 According to the *Scikit Learn Documentation*, the K-means algorithm "divides a set of $N$ samples $X$ into $K$ disjoint clusters $C$, each described by the mean $\mu_j$ of the samples in the cluster". These means are referred to as *centroids*, and despite living in the same space, they are usually not part of the dataset. The number $K$ is required to be initialized, along with the starting positions of the centroids. The algorithm has an objective function that minimizes the criterion of *within-cluster sum-of-squares*, the so-called *inertia*.
 
@@ -130,15 +152,17 @@ The algorithm follows an iterative process that consists of three main steps.
 
 then the difference between old and new centroids are calculated and the algorithm loops between steps 2) and 3) until this difference becomes small considering a threshold.
 
-![Visualization of the iterative process of K-means.](theory/images/kmeans.gif)
+<!-- ![Visualization of the iterative process of K-means.](theory/images/kmeans.gif) -->
 
 The documentation highlights yet another weakness of the algorithm at the stage of centroid initialization, as written, "K-means will always converge, however this may be to a local minimum". This outcome depends on the initial positions of the centroids, which if assigned randomly, may not find every cluster in the dataset. To address this, the algorithm in the *sklearn* library can be instructed to use a more intelligent initialization technique that places centroids distant from each other and can be used via the $init="\text{k-means++}"$ argument value. Besides the $n\_init$ parameter can be used to enhance this process, which is the "number of times the k-means algorithm is run with different centroid seeds" where the candidate with the best inertia is kept.
 
-## IV. Neural Networks
+
+
+### Neural Networks
 
 In order to comprehend the function of deep learning in unsupervised tasks, it is necessary to first define a neural network in its broadest definition. Neural networks, which are built to imitate biological processes, are fundamentally the engines for modern artificial intelligence. A neural network is described by *Amazon Web Services (AWS)* as a "method in artificial intelligence that teaches computers to process data in a way that is inspired by the human brain."
 
-### Layered structure
+#### Layered structure
 
 According to *GeeksforGeeks*, Artificial Neural Network (ANN) layers can be explained as follows:
 
@@ -146,17 +170,18 @@ According to *GeeksforGeeks*, Artificial Neural Network (ANN) layers can be expl
 2. **Hidden Layers:** The real "learning" and processing takes place in these layers, which are situated between the input and output layers. A network is referred to as "Deep Learning" if it has one or more hidden layers. Key role: they use mathematical processes (weighted sums) and activation functions (like *sigma* or *ReLU*) to add non-linearity to extract features and patterns from the data.
 
 The Hidden Layer types can vary depending on the architecture:
-* Dense (Fully Connected) Layers : Every neuron connects to every neuron in the next layer
-* Convolutional (Convergent) Layers: Mostly used to identify geometric sequence in images
-* Recurrent (Repetitive) Layers: Applied to sequence data, such as text or periods of time
-* Pooling & Dropout Layers: used to avoid overfitting and minimize dimensions, respectively
 
-![A diagram of a feedforward artificial neural network illustrating the flow of data through input, hidden, and output layers.](./theory/images/ann.png)
+* **Dense (Fully Connected) Layers:** Every neuron connects to every neuron in the next layer
+* **Convolutional (Convergent) Layers:** Mostly used to identify geometric sequence in images
+* **Recurrent (Repetitive) Layers:** Applied to sequence data, such as text or periods of time
+* **Pooling & Dropout Layers:** used to avoid overfitting and minimize dimensions, respectively
+
+![A diagram of a feedforward artificial neural network illustrating the flow of data through input, hidden, and output layers.](./theory/images/ann.png){#fig-ann width=80%}
 
 *AWS* states that "individual nodes can be simple, but when connected in a dense network,
 they solve complex problems." Supervised learning, in which the network is trained on labeled data (e.g., displaying computer images labeled "cat" until it learns to identify a cat), is traditionally the most well-known use of this design. The data isn't always labeled, though. This leads us to unsupervised techniques such as clustering.
 
-### Neural Networks in Clustering
+#### Neural Networks in Clustering
 
 Clustering is a key method in unsupervised learning, claims *IBM*. It involves "identifying distinct groups of data points" in which the machine must independently recognize patterns without the need for human assistance or pre-existing classifications. According to *IBM*, "clustering algorithms identify distinct groups of data points... such that data points in the same group are more similar to other data points in the same group than those in other groups."
 
@@ -165,6 +190,75 @@ A shift in architecture is necessary to combine these two concepts—by utilizin
 However, there is a more direct "neural" approach to clustering that relies on competitive
 learning instead of error correction which is *Self-Organizing Map (SOM)*.
 
-## V. Self-Organizing Maps (SOM)
+### Self-Organizing Maps (SOM)
 
-<!-- TODO -->
+According to @geeksforgeeks_som, a Self-Organizing Map is an unsupervised neural network algorithm that maps high-dimensional data to a lower dimensional grid making interpretation and visualization of the data easier. It follows both competitive and collaborative learning to fit a dataset using neighborhood defining parameters and functions to not only update the best matching unit of a given input data but also its neighborhood with a decay over a certain number of epochs. The learning process is performed in the following steps:
+
+1. **Setup:** The grid of the SOM is defined by its dimensions and hyperparameters such as the neighborhood settings.
+2. **Initialization:** The weights (the positions in the $N$-dimensional space) of the grid nodes are initialized randomly.
+3. **Competition:** For a given sample, the distance between each node in the grid is calculated and the closest is designated as the winning, that is the *best matching unit (BMU)*.
+4. **Collaboration:** The weight vector of the BMU is shifted towards the weight vector of the sample data using the learning rate parameter. The topological neighbors of the BMU are also updated according to the neighborhood function.
+5. **Decay:** Over the epochs, the neighborhood and learning rate decay. In the beginning, larger updates are made to help organization of the grid, but later only smaller refinements are performed to finalize convergence to local patterns.
+6. **Stopping:** The learning finishes when the maximum number of epochs is reached or when early stopping is instructed.
+
+
+
+\newpage
+## Methodology
+
+1. Use *K-means* algorithm to cluster data points in their original $N$-dimensional space. Use the cluster assignments as membership predictions. Visualize the identified clusters in $2D$ feature plots, pairwise. Interpret the outputs, take notes of any strange patterns caused by the dimensionality collapse, if there's any. Visually compare the clustering against true labels. Evaluate the quality of clustering with the help of supervised and unsupervised metrics.
+
+2. Use *Self-Organizing Maps (SOM)* to learn a representation of the data that can be visualized in two dimensions through the organized and flattened grid of the SOM.
+
+3. The SOM representation itself discretized the dataset yet if non-linear patterns are to be captured a larger, more flexible grid is required, by which it is expected that a real cluster will covered by multiple nodes in the grid. Therefore, we can apply *Agglomerative Clustering* to the learned representation to find high-level clusters in it. Use these cluster labels obtained via the best-matching unit (BMU) in the representation for each data point. Visually compare and evaluate the clustering against ground truth, and with the help of unsupervised metrics.
+
+4. Compare the results obtained via the algorithms of *K-means* and *Self-Organizing Maps (SOM)*.
+
+5. Briefly introduce a better visualization of the flattened two-dimensional *Self-Organizing Maps (SOM)* visual.
+
+\newpage
+## Experiments
+
+### Dataset
+
+The `Palmer penguins` dataset was used during the experiments obtained from the `palmerpenguins` python library. The original shape of the dataset is 344 observations and 8 features, both categorical and numerical.
+
+### Preprocessing
+
+The dataset was limited to the 4 numerical features of `bill_length_mm`, `bill_depth_mm`, `flipper_length_mm` and `body_mass_g`. Observations with missing values in these features were dropped, resulting in a total of 342 records. The features of this dataset were standardized.
+
+### Experiment 1: K-means clustering
+
+The `KMeans` estimator from the `sklearn` library was used to fit and cluster the data in its preprocessed four-dimensional space with a heuristic to seek 3 groups. The identified clusters were plotted in two-dimensional scatter plots, for all features, pairwise as depicted in @fig-kmeans-01.
+
+One important insight is that the identified clusters do not separate clearly and there are regions where they overlap each other in the two-dimensional plots.
+
+*Given the K-means algorithm segments the data space, why there are no clear separation lines and how come there are intermingling regions in the resulting plots?*
+
+- **K-Means assumptions**: K-Means divides the data space into convex spherical clusters, that may lead to arbitrary separation lines that do not align with irregularly shaped clusters
+- Dataset itself **may not have clear separation** lines for the real groups: these borders can appear intermingled which can be amplified by the styling properties of the scatter plot such as the size of the marker
+- **Projection** from $4D$ to $2D$ **distorts** the **original structure**: those regions that appear as intermingled in the collapsed space do not overlap in the original $N$-dimensional feature space
+
+Comparison of the identified clusters against ground truth labels are depicted in @fig-kmeans-02. The accuracy and quality of the clustering were assessed as included in @tbl-kmeans. Besides, it's worth mentioning that even this simple dataset with 4 features required 6 individual pairwise plots to observe the patterns from every angle.
+
+| Homogeneity | Completeness | V-measure | Accuracy |
+|------------:|-------------:|----------:|---------:|
+|       0.798 |        0.773 |     0.786 |    0.915 |
+
+: Performance evaluation of the *K-means* clustering. {#tbl-kmeans}
+
+
+![Clusters identified via the *K-means* algorithm.](./_images/experiments/kmeans_clustering_01.png){#fig-kmeans-01 width=85%}
+
+::: {#fig-kmeans-02 width=85%}
+
+![](./_images/experiments/kmeans_clustering_02_01.png){#fig-kmeans-02-01}
+
+![](./_images/experiments/kmeans_clustering_02_02.png){#fig-kmeans-02-02}
+
+![](./_images/experiments/kmeans_clustering_02_03.png){#fig-kmeans-02-03}
+
+Comparison of identified clusters and ground truth labels of penguin species. Only 3 pairwise plots out of the 6 are included here.
+:::
+
+\newpage

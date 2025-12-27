@@ -193,13 +193,13 @@ learning instead of error correction which is *Self-Organizing Map (SOM)*.
 
 ### Self-Organizing Maps (SOM)
 
-According to @geeksforgeeks_som, a Self-Organizing Map is an unsupervised neural network algorithm that maps high-dimensional data to a lower dimensional grid making interpretation and visualization of data easier. It follows both competitive and collaborative learning to fit a dataset using neighborhood defining parameters and functions to not only update the best matching unit of a given sample but also its neighborhood with a decay over a certain number of epochs. The learning process is performed in the following steps:
+According to @geeksforgeeks_som, a Self-Organizing Map is an unsupervised neural network algorithm that maps high-dimensional data to a lower dimensional grid making interpretation and visualization of the data easier. It follows both competitive and collaborative learning to fit a dataset using neighborhood defining parameters and functions to not only update the best matching unit of a given input data but also its neighborhood with a decay over a certain number of epochs. The learning process is performed in the following steps:
 
-1. **Setup:** The grid of the SOM is defined by its dimensions and hyperparameters such as the neighborhood definitions.
+1. **Setup:** The grid of the SOM is defined by its dimensions and hyperparameters such as the neighborhood settings.
 2. **Initialization:** The weights (the positions in the $N$-dimensional space) of the grid nodes are initialized randomly.
 3. **Competition:** For a given sample, the distance between each node in the grid is calculated and the closest is designated as the winning, that is the *best matching unit (BMU)*.
-4. **Collaboration:** The weight vector of the BMU is shifted towards the weight vector of the sample data using the learning rate parameter. The topological neighbors of the BMU are also updated according to the neighborhood radius (sigma) and the neighborhood function.
-5. **Decay:** Over the epochs, the sigma and learning rate decay. In the beginning, larger updates are made to help organization of the grid, but later only smaller refinements are performed to finalize convergence to local patterns.
+4. **Collaboration:** The weight vector of the BMU is shifted towards the weight vector of the sample data using the learning rate parameter. The topological neighbors of the BMU are also updated according to the neighborhood function.
+5. **Decay:** Over the epochs, the neighborhood and learning rate decay. In the beginning, larger updates are made to help organization of the grid, but later only smaller refinements are performed to finalize convergence to local patterns.
 6. **Stopping:** The learning finishes when the maximum number of epochs is reached or when early stopping is instructed.
 
 

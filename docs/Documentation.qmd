@@ -5,19 +5,21 @@ toc-depth: 2
 number-sections: true
 bibliography: references.bib
 
-header-includes:
-  - \usepackage{titlesec}
-  - \titlespacing*{\subsection}{0pt}{1.5em}{1em}
+project:
+  header-includes:
+    - \usepackage{titlesec}
+    - \titlespacing*{\subsection}{0pt}{1.5em}{1em}
 
 format:
-  pdf:
-    latex-engine: xelatex
-    documentclass: article
-    fontsize: 11pt
-    geometry: margin=1in
-    linestretch: 1
-    cite-method: biblatex
-  md: default
+  html:
+    output-file: index.html
+#  pdf:
+#    latex-engine: xelatex
+#    documentclass: article
+#    fontsize: 11pt
+#    geometry: margin=1in
+#    linestretch: 1
+#    cite-method: biblatex
 ---
 
 \newpage
@@ -34,7 +36,7 @@ while from the practical aspect, we expect to get hands on experience in using K
 
 Additionally, we will use 2D visualizations to **explore**, **understand** and **explain** **patterns** in the data. We will get hands on experience how unsupervised and representation learning works along with how to visualize high-dimensional data in a way that is interpretable for the human eye.
 
-![Bird's eye view of the project.](./_images/overview.png)
+![Bird's eye view of the project.](./_images/overview.png){#fig-intro}
 
 
 
@@ -44,7 +46,7 @@ Additionally, we will use 2D visualizations to **explore**, **understand** and *
 
 ### General Data Science pipeline
 
-@fig-ds-pipeline-1 depicts the general workflow of Data Science while @fig-ds-pipeline-2 displays a broader view on the process. Elaboration of the main steps are as follows.
+@fig-background-01 depicts the general workflow of Data Science while @fig-background-02 displays a broader view on the process. Elaboration of the main steps are as follows.
 
 **Define and understand the problem**
 
@@ -74,9 +76,9 @@ The trained model is evaluated on never before seen samples that we refer to as 
 
 In this stage, models get deployed, observed and refinements are initiated to start the cycle again.
 
-![General pipeline of Data Science. Figure by @datascience_pm_workflow.](_images/ds-pipeline-1.png){#fig-ds-pipeline-1 width=80%}
+![General pipeline of Data Science. Figure by @datascience_pm_workflow.](_images/ds-pipeline-1.png){#fig-background-01 width=80%}
 
-![Graphic summary of the Data Science Pipeline. Figure by @illinois_exploration.](_images/ds-pipeline-2.png){#fig-ds-pipeline-2}
+![Graphic summary of the Data Science Pipeline. Figure by @illinois_exploration.](_images/ds-pipeline-2.png){#fig-background-02}
 
 
 
@@ -143,9 +145,9 @@ Inertia is "a measure of how internally coherent clusters are". It assumes that 
 - performs poorly on elongated clusters or manifolds with irregular shapes
 - not normalized: lower values are better, zero is optimal, yet in higher-dimensions distances get inflated
 
-![K-means behavior illustrated on simple synthetic datasets with different shapes.](_images/kmeans_behavior_01.png)
+![K-means behavior illustrated on simple synthetic datasets with different shapes.](_images/kmeans_behavior_01.png){#fig-background-03}
 
-![K-means behavior illustrated on simple synthetic datasets with different shapes.](_images/kmeans_behavior_02.png)
+![K-means behavior illustrated on simple synthetic datasets with different shapes.](_images/kmeans_behavior_02.png){#fig-background-04}
 
 The algorithm follows an iterative process that consists of three main steps.
 
@@ -178,7 +180,7 @@ The Hidden Layer types can vary depending on the architecture:
 * **Recurrent (Repetitive) Layers:** Applied to sequence data, such as text or periods of time
 * **Pooling & Dropout Layers:** used to avoid overfitting and minimize dimensions, respectively
 
-![A diagram of a feedforward artificial neural network illustrating the flow of data through input, hidden, and output layers.](./_images/ann.png){#fig-ann width=80%}
+![A diagram of a feedforward artificial neural network illustrating the flow of data through input, hidden, and output layers.](./_images/ann.png){#fig-background-05 width=80%}
 
 *AWS* states that "individual nodes can be simple, but when connected in a dense network,
 they solve complex problems." Supervised learning, in which the network is trained on labeled data (e.g., displaying computer images labeled "cat" until it learns to identify a cat), is traditionally the most well-known use of this design. The data isn't always labeled, though. This leads us to unsupervised techniques such as clustering.
@@ -293,7 +295,7 @@ Comparison of identified clusters and ground truth labels of penguin species. On
 
 
 \newpage
-### Experiment 2: Representation learning via Self-Organizing Map (SOM)
+### Experiment 2: Representation learning via Self-Organizing Map
 
 The `MiniSom` class from the `minisom` library was used to learn the representation of the dataset. First the dataset was temporarily limited to two features and was treated as it had arbitrary dimensionality. The fitted map exhibited a topographic error of less than 1% (0.3%) confirming that the map is mathematically smooth and has effectively preserved the neighborhood relationships of the original high-dimensional data. Knowing this, we can visualize the flattened map of the SOM, the so-called two-dimensional U-matrix that displays the SOM grid with colors according to the average distance of the neighbors for each node represented as pixels, as depicted in @fig-som-learning-01-01. Although the quantization error is also small, being 0.39, considering the standardized feature space with small dimensionality, this suggest that the map itself does not hug the data points closely as @fig-som-learning-01-02 verifies this. Rather, with this configuration, the map behaves like a "principal curve" or a thick snake, winding through the center of the data density.
 
@@ -319,7 +321,7 @@ After optimizing the hyperparameters, an SOM with topographic error of around 2%
 
 
 \newpage
-### Experiment 3: SOM representation based clustering
+### Experiment 3: Clustering via segmenting the Self-Organizing Map representation
 
 The SOM representation itself discretizes the dataset yet if non-linear patterns are to be captured a larger, more flexible grid is required, by which it is expected that a real cluster will be covered by multiple nodes of the SOM grid. Therefore, we may apply *Agglomerative Clustering* on the learned representation to find clusters in it on a higher level. These cluster labels, obtained through the best-matching unit (BMU), then can be used for each data point, as depicted in @fig-som-clustering-01-01 and @fig-som-clustering-02-01 for the SOM with manually selected and optimized hyperparameters, respectively.
 

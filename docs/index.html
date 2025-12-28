@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.25">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Clustering Data and Visualizing in 2D</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="Documentation_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Documentation_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="Documentation_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="Documentation_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="Documentation_files/libs/quarto-html/popper.min.js"></script>
+<script src="Documentation_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Documentation_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Documentation_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Documentation_files/libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Documentation_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Documentation_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Documentation_files/libs/bootstrap/bootstrap-d6a003b94517c951b2d65075d42fb01b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul class="collapse">
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a></li>
+  <li><a href="#background" id="toc-background" class="nav-link" data-scroll-target="#background"><span class="header-section-number">2</span> Background</a></li>
+  <li><a href="#methodology" id="toc-methodology" class="nav-link" data-scroll-target="#methodology"><span class="header-section-number">3</span> Methodology</a></li>
+  <li><a href="#experiments" id="toc-experiments" class="nav-link" data-scroll-target="#experiments"><span class="header-section-number">4</span> Experiments</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clustering Data and Visualizing in 2D</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">1</span> Introduction</h2>
+<p>In this project, titled as <em>Clustering Data and Visualizing in 2D</em>, we aim to group similar data points of a dataset together and then visualize <em>where</em> and <em>how</em> those groups separate from each other and explore what characterizes them. From a theoretical point of view, we plan to explore consepts such as:</p>
+<ul>
+<li>General Data Science pipeline</li>
+<li>Unsupervised learning</li>
+<li>Representation learning</li>
+<li>Neural networks,</li>
+</ul>
+<p>while from the practical aspect, we expect to get hands on experience in using K-means and Self-Organizing Map (SOM) algorithms. The diagram below provides a high level view on the topics covered in the project and how they build upon each other.</p>
+<p>Additionally, we will use 2D visualizations to <strong>explore</strong>, <strong>understand</strong> and <strong>explain</strong> <strong>patterns</strong> in the data. We will get hands on experience how unsupervised and representation learning works along with how to visualize high-dimensional data in a way that is interpretable for the human eye.</p>
+<div id="fig-intro" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-intro-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./_images/overview.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-intro-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Bird’s eye view of the project.
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="background" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="background"><span class="header-section-number">2</span> Background</h2>
+<section id="general-data-science-pipeline" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="general-data-science-pipeline"><span class="header-section-number">2.1</span> General Data Science pipeline</h3>
+<p><a href="#fig-background-01" class="quarto-xref">Figure&nbsp;2</a> depicts the general workflow of Data Science while <a href="#fig-background-02" class="quarto-xref">Figure&nbsp;3</a> displays a broader view on the process. Elaboration of the main steps are as follows.</p>
+<p><strong>Define and understand the problem</strong></p>
+<p>The problem needs to be clearly defined and then turned into a Data Science task, so clear steps can be defined on how to solve it.</p>
+<p><strong>Data collection</strong></p>
+<p>In this step, it is important to collect the data that is suitable for the job. It is a good idea to collect more data than you need as data sets can be incomplete and dirty. Although, it is very important to highlight that the <em>quality</em> of the data is more important than the <em>quantity</em>.</p>
+<p><strong>Data cleaning and preprocessing</strong></p>
+<p>Raw data can include missing entries, duplicates, extreme outliers to name a few. Un- or improperly processed data will lead to bad models.</p>
+<p><strong>Data exploration (EDA)</strong></p>
+<p>In this phase—often referred to as <em>Exploratory Data Analysis</em>—characteristics of the dataset are summarized and visualized. It helps in understanding what the collected data tells us: answer questions right away, see patterns or anomalies that could guide in building a better model.</p>
+<p><strong>Model building</strong></p>
+<p>In this part, the preprocessed data is used to train a model that discovers hidden patterns or learn from it in order to make predictions for the future.</p>
+<p><strong>Evaluation</strong></p>
+<p>The trained model is evaluated on never before seen samples that we refer to as the test (or holdout) set, by which we can verify how well the model generalizes.</p>
+<p><strong>Deployment and refinement</strong></p>
+<p>In this stage, models get deployed, observed and refinements are initiated to start the cycle again.</p>
+<div id="fig-background-01" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-background-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="_images/ds-pipeline-1.png" class="img-fluid figure-img" style="width:80.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-background-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: General pipeline of Data Science. Figure by <span class="citation" data-cites="datascience_pm_workflow">DataScience-PM.com (<a href="#ref-datascience_pm_workflow" role="doc-biblioref">2024</a>)</span>.
+</figcaption>
+</figure>
+</div>
+<div id="fig-background-02" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-background-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="_images/ds-pipeline-2.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-background-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Graphic summary of the Data Science Pipeline. Figure by <span class="citation" data-cites="illinois_exploration">Ellison and Deeke (<a href="#ref-illinois_exploration" role="doc-biblioref">2025</a>)</span>.
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="supervision-in-machine-learning" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="supervision-in-machine-learning"><span class="header-section-number">2.2</span> Supervision in Machine Learning</h3>
+<!-- Models usually fall into two categories: *Supervised* and *Unsupervised*. Supervised models have a known outcome, it has labeled data. For example, a model trained on spam emails would include examples of both spam and non-spam emails, from which it „learns” what a spam email looks like. Unsupervised models, on the other hand, don’t have such labels, they compare patterns and trends in data. For example, if you wanted to know the shopping habits of your customers based on their preferences. Unsupervised learning can be challenging as its output can be vague and inconcrete which can lead to bias. It's evaluation is completely different than that of supervised approaches. Still unsupervised learning has the advantage to spot hiddenor previously not seen paterns, that supervised models cannot recognize unless specifically trained to do so. -->
+<section id="supervised" class="level4" data-number="2.2.1">
+<h4 data-number="2.2.1" class="anchored" data-anchor-id="supervised"><span class="header-section-number">2.2.1</span> Supervised</h4>
+<p>In supervised feature learning, the input data is labelled, meaning data given to the model includes input-label pairs. This resorts in a representation with high label prediction accuracy. Examples include supervised neural networks, multilayer perceptrons, and dictionary learning.</p>
+</section>
+<section id="unsupervised" class="level4" data-number="2.2.2">
+<h4 data-number="2.2.2" class="anchored" data-anchor-id="unsupervised"><span class="header-section-number">2.2.2</span> Unsupervised</h4>
+<p>Unsupervised feature learning uses unlabelled input data, it learns features by analyzing the relationship between data points. Examples include Clustering (K-means), ICA and matrix factorization.</p>
+</section>
+<section id="other-methods" class="level4" data-number="2.2.3">
+<h4 data-number="2.2.3" class="anchored" data-anchor-id="other-methods"><span class="header-section-number">2.2.3</span> Other methods</h4>
+<p>In semi-supervised learning, a model is trained on data related to one class, or some of the classes. Real life scenarios include anomaly detection where there is sufficient training data for normal events while anomalous ones occur rarely, expensive to acquire, or they evolve in a way that only deviations from the normal boundary can successfully detect them.</p>
+<p>In self-supervised learning, features are learned using unlabelled data like unsupervised learning, however input-label pairs are constructed from each data point, enabling learning the structure of the data through supervised methods. Examples include word embeddings and autoencoders.</p>
+</section>
+</section>
+<section id="representation-learning" class="level3" data-number="2.3">
+<h3 data-number="2.3" class="anchored" data-anchor-id="representation-learning"><span class="header-section-number">2.3</span> Representation Learning</h3>
+<p>Representation/feature learning is a broader term for techniques that allow an ML system to automatically discover representations needed for further tasks such as feature detection and classification. These tasks require inputs that are mathematically easy to represent and convenient to process and do operations with, however real world data is often the opposite (images, videos, sensor data, etc…). These representations are usually continuous vectors.</p>
+<section id="autoencoders" class="level4" data-number="2.3.1">
+<h4 data-number="2.3.1" class="anchored" data-anchor-id="autoencoders"><span class="header-section-number">2.3.1</span> Autoencoders</h4>
+<p>An autoencoder is a type of neural network architecture that is having three core components: the encoder, the decoder, and the latent-space representation. The encoder compresses the input to a lower latent-space representation via weight matrixes biases and a nonlinear activation function and then the decoder reconstructs it.</p>
+</section>
+<section id="prototype-learning" class="level4" data-number="2.3.2">
+<h4 data-number="2.3.2" class="anchored" data-anchor-id="prototype-learning"><span class="header-section-number">2.3.2</span> Prototype Learning</h4>
+<p>Prototype learning is a family of methods where a model represents each class, cluster, or concept using prototypes—vectors in a learned feature space that act as representative examples. A model then makes predictions by comparing new samples to these prototypes. These prototypes provide an abstract representation for many natural categories and concepts.</p>
+</section>
+</section>
+<section id="k-means-clustering" class="level3" data-number="2.4">
+<h3 data-number="2.4" class="anchored" data-anchor-id="k-means-clustering"><span class="header-section-number">2.4</span> K-means Clustering</h3>
+<p>Clustering is an unsupervised machine learning technique that learns patterns from the features of a dataset without using labels. <em>K-means</em> is a simple algorithm that attempts to partition samples into <span class="math inline">\(K\)</span> groups with roughly equal variance, although the latter is not guaranteed.</p>
+<p>K-means clustering is prototype learning algorithm used to categorize n (usually vectors of unlabelled data) items into k number of clusters. It is useful for identifying natural groupings of data and structuring raw data. Determining what k should be is important for the segmentation to be meaningful and there are multiple methods for determining the optimal value for k. K-means has a variety of uses due to its simplicity and effectiveness, including data segmentation, image compression and anomaly detection.</p>
+<ul>
+<li>Unsupervised machine learning technique</li>
+<li>“K-means” = “K averages” / “K central tendencies” / “K centroids”</li>
+<li>Can be looked at as a prototyping tool that discretizes the data into <span class="math inline">\(K\)</span> prototypes</li>
+</ul>
+<section id="algorithm-in-a-nutshell" class="level4" data-number="2.4.1">
+<h4 data-number="2.4.1" class="anchored" data-anchor-id="algorithm-in-a-nutshell"><span class="header-section-number">2.4.1</span> Algorithm in a nutshell</h4>
+<p>The algorithm will categorize the inputs into k clusters based on similarity. Measuring of similarity is done with the square of the Euclidean distance of the data vectors. Summarized, the algorithm works as follows:</p>
+<ol type="1">
+<li>Initialization: Randomly select k number of centerpoints for the clusters, called centroids.</li>
+<li>Assignment: Each data point is assigned to a cluster based on which centroid is the nearest to it (using Euclidean distance).</li>
+<li>Update: We recalculate the position of each centroid based on the average of the data points in each cluster.</li>
+<li>Repeat: We repeat this process until the position of each centroid is unchanged or we reach a pre-defined iteration limit</li>
+</ol>
+</section>
+<section id="algorithm-in-details" class="level4" data-number="2.4.2">
+<h4 data-number="2.4.2" class="anchored" data-anchor-id="algorithm-in-details"><span class="header-section-number">2.4.2</span> Algorithm in details</h4>
+<p>According to the <em>Scikit Learn Documentation</em>, the K-means algorithm “divides a set of <span class="math inline">\(N\)</span> samples <span class="math inline">\(X\)</span> into <span class="math inline">\(K\)</span> disjoint clusters <span class="math inline">\(C\)</span>, each described by the mean <span class="math inline">\(\mu_j\)</span> of the samples in the cluster”. These means are referred to as <em>centroids</em>, and despite living in the same space, they are usually not part of the dataset. The number <span class="math inline">\(K\)</span> is required to be initialized, along with the starting positions of the centroids. The algorithm has an objective function that minimizes the criterion of <em>within-cluster sum-of-squares</em>, the so-called <em>inertia</em>.</p>
+<p><span class="math display">\[
+\sum^n_{i=0} \min_{\mu_j \in C} (|| x_i - \mu_j ||^2)
+\]</span></p>
+<p>Inertia is “a measure of how internally coherent clusters are”. It assumes that clusters are convex and isotropic. As the documentation highlights it, it suffers from drawbacks:</p>
+<ul>
+<li>performs poorly on elongated clusters or manifolds with irregular shapes</li>
+<li>not normalized: lower values are better, zero is optimal, yet in higher-dimensions distances get inflated</li>
+</ul>
+<div id="fig-background-03" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-background-03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="_images/kmeans_behavior_01.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-background-03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: K-means behavior illustrated on simple synthetic datasets with different shapes.
+</figcaption>
+</figure>
+</div>
+<div id="fig-background-04" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-background-04-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="_images/kmeans_behavior_02.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-background-04-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: K-means behavior illustrated on simple synthetic datasets with different shapes.
+</figcaption>
+</figure>
+</div>
+<p>The algorithm follows an iterative process that consists of three main steps.</p>
+<ul>
+<li>initialize centroid positions</li>
+<li>assign each sample to its nearest centroid</li>
+<li>create new centroids by taking the mean value of the samples assigned to each previous centroid,</li>
+</ul>
+<p>then the difference between old and new centroids are calculated and the algorithm loops between steps 2) and 3) until this difference becomes small considering a threshold.</p>
+<p>The documentation highlights yet another weakness of the algorithm at the stage of centroid initialization, as written, “K-means will always converge, however this may be to a local minimum”. This outcome depends on the initial positions of the centroids, which if assigned randomly, may not find every cluster in the dataset. To address this, the algorithm in the <em>sklearn</em> library can be instructed to use a more intelligent initialization technique that places centroids distant from each other and can be used via the <span class="math inline">\(init="\text{k-means++}"\)</span> argument value. Besides the <span class="math inline">\(n\_init\)</span> parameter can be used to enhance this process, which is the “number of times the k-means algorithm is run with different centroid seeds” where the candidate with the best inertia is kept.</p>
+</section>
+</section>
+<section id="neural-networks" class="level3" data-number="2.5">
+<h3 data-number="2.5" class="anchored" data-anchor-id="neural-networks"><span class="header-section-number">2.5</span> Neural Networks</h3>
+<p>In order to comprehend the function of deep learning in unsupervised tasks, it is necessary to first define a neural network in its broadest definition. Neural networks, which are built to imitate biological processes, are fundamentally the engines for modern artificial intelligence. A neural network is described by <em>Amazon Web Services (AWS)</em> as a “method in artificial intelligence that teaches computers to process data in a way that is inspired by the human brain.”</p>
+<section id="layered-structure" class="level4" data-number="2.5.1">
+<h4 data-number="2.5.1" class="anchored" data-anchor-id="layered-structure"><span class="header-section-number">2.5.1</span> Layered structure</h4>
+<p>According to <em>GeeksforGeeks</em>, Artificial Neural Network (ANN) layers can be explained as follows:</p>
+<ol type="1">
+<li><strong>Input Layer:</strong> This is the network’s entry point. It transfers raw data—such as an image’s pixels or a dataset’s columns—to the layers that follow. Key role: this layer merely buffers and sends the input signals to the buried levels; no calculation takes place here.</li>
+<li><strong>Hidden Layers:</strong> The real “learning” and processing takes place in these layers, which are situated between the input and output layers. A network is referred to as “Deep Learning” if it has one or more hidden layers. Key role: they use mathematical processes (weighted sums) and activation functions (like <em>sigma</em> or <em>ReLU</em>) to add non-linearity to extract features and patterns from the data.</li>
+</ol>
+<p>The Hidden Layer types can vary depending on the architecture:</p>
+<ul>
+<li><strong>Dense (Fully Connected) Layers:</strong> Every neuron connects to every neuron in the next layer</li>
+<li><strong>Convolutional (Convergent) Layers:</strong> Mostly used to identify geometric sequence in images</li>
+<li><strong>Recurrent (Repetitive) Layers:</strong> Applied to sequence data, such as text or periods of time</li>
+<li><strong>Pooling &amp; Dropout Layers:</strong> used to avoid overfitting and minimize dimensions, respectively</li>
+</ul>
+<div id="fig-background-05" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-background-05-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./_images/ann.png" class="img-fluid figure-img" style="width:80.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-background-05-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: A diagram of a feedforward artificial neural network illustrating the flow of data through input, hidden, and output layers.
+</figcaption>
+</figure>
+</div>
+<p><em>AWS</em> states that “individual nodes can be simple, but when connected in a dense network, they solve complex problems.” Supervised learning, in which the network is trained on labeled data (e.g., displaying computer images labeled “cat” until it learns to identify a cat), is traditionally the most well-known use of this design. The data isn’t always labeled, though. This leads us to unsupervised techniques such as clustering.</p>
+</section>
+<section id="neural-networks-in-clustering" class="level4" data-number="2.5.2">
+<h4 data-number="2.5.2" class="anchored" data-anchor-id="neural-networks-in-clustering"><span class="header-section-number">2.5.2</span> Neural Networks in Clustering</h4>
+<p>Clustering is a key method in unsupervised learning, claims <em>IBM</em>. It involves “identifying distinct groups of data points” in which the machine must independently recognize patterns without the need for human assistance or pre-existing classifications. According to <em>IBM</em>, “clustering algorithms identify distinct groups of data points… such that data points in the same group are more similar to other data points in the same group than those in other groups.”</p>
+<p>A shift in architecture is necessary to combine these two concepts—by utilizing a Neural Network, which is typically supervised, with Clustering, that is unsupervised. How does the network learn if there are no labels to fix it? Standard feed-forward networks aren’t ideally suited for this, as discussed in the <em>Cross Validated (Stack Exchange)</em> forum. Rather, certain designs are needed. The usage of automatic encoders is one popular strategy that was brought up in the conversation. One contributor points out that clustering can be accomplished by “training an autoencoder… and then clustering the data in the bottom layer.” In this case, the clustering process is far more effective than attempting to group raw, high-dimensional data since the neural network learns to compress data (dimensionality reduction) into a dense representation.</p>
+<p>However, there is a more direct “neural” approach to clustering that relies on competitive learning instead of error correction which is <em>Self-Organizing Map (SOM)</em>.</p>
+</section>
+</section>
+<section id="self-organizing-maps-som" class="level3" data-number="2.6">
+<h3 data-number="2.6" class="anchored" data-anchor-id="self-organizing-maps-som"><span class="header-section-number">2.6</span> Self-Organizing Maps (SOM)</h3>
+<p>According to <span class="citation" data-cites="geeksforgeeks_som">GeeksforGeeks (<a href="#ref-geeksforgeeks_som" role="doc-biblioref">2025</a>)</span>, a Self-Organizing Map is an unsupervised neural network algorithm that maps high-dimensional data to a lower dimensional grid making interpretation and visualization of the data easier. It follows both competitive and collaborative learning to fit a dataset using neighborhood defining parameters and functions to not only update the best matching unit of a given input data but also its neighborhood with a decay over a certain number of epochs. The learning process is performed in the following steps:</p>
+<ol type="1">
+<li><strong>Setup:</strong> The grid of the SOM is defined by its dimensions and hyperparameters such as the neighborhood settings.</li>
+<li><strong>Initialization:</strong> The weights (the positions in the <span class="math inline">\(N\)</span>-dimensional space) of the grid nodes are initialized randomly.</li>
+<li><strong>Competition:</strong> For a given sample, the distance between each node in the grid is calculated and the closest is designated as the winning, that is the <em>best matching unit (BMU)</em>.</li>
+<li><strong>Collaboration:</strong> The weight vector of the BMU is shifted towards the weight vector of the sample data using the learning rate parameter. The topological neighbors of the BMU are also updated according to the neighborhood function.</li>
+<li><strong>Decay:</strong> Over the epochs, the neighborhood and learning rate decay. In the beginning, larger updates are made to help organization of the grid, but later only smaller refinements are performed to finalize convergence to local patterns.</li>
+<li><strong>Stopping:</strong> The learning finishes when the maximum number of epochs is reached or when early stopping is instructed.</li>
+</ol>
+</section>
+</section>
+<section id="methodology" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="methodology"><span class="header-section-number">3</span> Methodology</h2>
+<ol type="1">
+<li><p>Use the <em>K-means</em> algorithm to cluster data points in their original <span class="math inline">\(N\)</span>-dimensional space. Use the cluster assignments as membership predictions. Visualize the identified clusters in <span class="math inline">\(2D\)</span> feature plots, pairwise. Interpret the outputs, take notes of any strange patterns caused by the dimensionality collapse, if there’s any. Visually compare the clustering against true labels. Evaluate the quality of clustering with the help of supervised and unsupervised metrics.</p></li>
+<li><p>Use <em>Self-Organizing Maps (SOM)</em> to learn a representation of the dataset that can be visualized in two dimensions through the organized and flattened grid of the map.</p></li>
+<li><p>Segment the learned representation via <em>Agglomerative Clustering</em>. Visually compare the clustering against true labels. Evaluate the quality of clustering with the help of supervised and unsupervised metrics.</p></li>
+<li><p>Compare the clustering results of <em>K-means</em> and <em>Self-Organizing Maps</em>.</p></li>
+<li><p>Briefly introduce a better visualization of the flattened two-dimensional <em>Self-Organizing Map</em> visual.</p></li>
+</ol>
+</section>
+<section id="experiments" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="experiments"><span class="header-section-number">4</span> Experiments</h2>
+<p>The following experiments were conducted based on the methodology. Performance of each model was evaluated and summarized in <a href="#tbl-performance" class="quarto-xref">Table&nbsp;1</a>.</p>
+<ol type="1">
+<li>Clustering via <em>K-means</em></li>
+<li>Representation learning via <em>Self-Organizing Map (SOM)</em>
+<ul>
+<li>Manual hyperparameter selection</li>
+<li>Optimized hyperparameter selection</li>
+</ul></li>
+<li>Clustering via segmenting the <em>Self-Organizing Map (SOM)</em> representation</li>
+</ol>
+<section id="dataset" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="dataset"><span class="header-section-number">4.1</span> Dataset</h3>
+<p>The <code>Palmer penguins</code> dataset was used during the experiments obtained from the <code>palmerpenguins</code> python library. The original shape of the dataset is 344 observations and 8 features, including both categorical and numerical.</p>
+</section>
+<section id="preprocessing" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="preprocessing"><span class="header-section-number">4.2</span> Preprocessing</h3>
+<p>The dataset was limited to the 4 numerical features of <code>bill_length_mm</code>, <code>bill_depth_mm</code>, <code>flipper_length_mm</code> and <code>body_mass_g</code>. Observations with missing values in these features were dropped, resulting in a total of 342 records. The features of this dataset were standardized.</p>
+</section>
+<section id="hyperparameters" class="level3" data-number="4.3">
+<h3 data-number="4.3" class="anchored" data-anchor-id="hyperparameters"><span class="header-section-number">4.3</span> Hyperparameters</h3>
+<p>For the <em>K-means</em> algorithm, <span class="math inline">\(K\)</span> was specified as 3, implied by the three penguin species that we aim to separate. As for the SOM, three set of hyperparameters were tested. The first was defined manually as:</p>
+<ul>
+<li>Grid size: <span class="math inline">\(4 \times 37\)</span></li>
+<li>Neighborhood radius: <span class="math inline">\(\sigma = \frac{max(d_1, d_2)}{3} \simeq 12.3\)</span></li>
+<li>Epochs: <span class="math inline">\(100\)</span></li>
+<li>Learning rate: <span class="math inline">\(\alpha = 0.5\)</span></li>
+<li>Topology: “rectangular”,</li>
+</ul>
+<p>while the second as:</p>
+<ul>
+<li>Grid size: <span class="math inline">\(12 \times 12\)</span></li>
+<li>Neighborhood radius: <span class="math inline">\(\sigma = \frac{max(d_1, d_2)}{3} = 4\)</span></li>
+<li>Epochs: <span class="math inline">\(100\)</span></li>
+<li>Learning rate: <span class="math inline">\(\alpha = 0.5\)</span></li>
+<li>Topology: “rectangular”,</li>
+</ul>
+<p>finally, the third one was optimized for the downstream task of <em>agglomerative clustering</em> using <em>ward</em> linkage with the objective function to maximize the <em>silhouette score</em> for 3 target clusters, as follows:</p>
+<ul>
+<li>Grid size: <span class="math inline">\(13 \times 13\)</span></li>
+<li>Neighborhood radius: <span class="math inline">\(\sigma = \frac{max(d_1, d_2)}{3} = 4.33\)</span></li>
+<li>Epochs: <span class="math inline">\(39\)</span></li>
+<li>Learning rate: <span class="math inline">\(\alpha = 0.6\)</span></li>
+<li>Topology: “rectangular”</li>
+</ul>
+</section>
+<section id="experiment-1-k-means-clustering" class="level3" data-number="4.4">
+<h3 data-number="4.4" class="anchored" data-anchor-id="experiment-1-k-means-clustering"><span class="header-section-number">4.4</span> Experiment 1: K-means clustering</h3>
+<p>The <code>KMeans</code> estimator from the <code>sklearn</code> library was used to fit and cluster the data in its preprocessed four-dimensional space with a heuristic to seek 3 groups. The identified clusters were plotted in two-dimensional scatter plots, for all features, pairwise as depicted in <a href="#fig-kmeans-01" class="quarto-xref">Figure&nbsp;7</a>.</p>
+<p>One important insight is that the identified clusters do not separate clearly and there are regions where they overlap each other in the two-dimensional plots.</p>
+<p><em>Given the K-means algorithm segments the data space, why there are no clear separation lines and how come there are intermingling regions in the resulting plots?</em></p>
+<ul>
+<li><strong>K-Means assumptions</strong>: K-Means divides the data space into convex spherical clusters, that may lead to arbitrary separation lines that do not align with irregularly shaped clusters</li>
+<li>Dataset itself <strong>may not have clear separation</strong> lines for the real groups: these borders can appear intermingled which can be amplified by the styling properties of the scatter plot such as the size of the marker</li>
+<li><strong>Projection</strong> from <span class="math inline">\(4D\)</span> to <span class="math inline">\(2D\)</span> <strong>distorts</strong> the <strong>original structure</strong>: those regions that appear as intermingled in the collapsed space do not overlap in the original <span class="math inline">\(N\)</span>-dimensional feature space</li>
+</ul>
+<p>Comparison of the identified clusters against ground truth labels are depicted in <a href="#fig-kmeans-02" class="quarto-xref">Figure&nbsp;8</a>.</p>
+<div id="fig-kmeans-01" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-kmeans-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./_images/experiments/kmeans_clustering_01.png" class="img-fluid figure-img" style="width:85.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-kmeans-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: Clusters identified via the <em>K-means</em> algorithm.
+</figcaption>
+</figure>
+</div>
+<div id="fig-kmeans-02" class="quarto-float quarto-figure quarto-figure-center anchored" width="85%">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-kmeans-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div id="fig-kmeans-02-01" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-kmeans-02-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./_images/experiments/kmeans_clustering_02_01.png" id="fig-kmeans-02-01" class="img-fluid figure-img" data-ref-parent="fig-kmeans-02">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-kmeans-02-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a)
+</figcaption>
+</figure>
+</div>
+<div id="fig-kmeans-02-02" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-kmeans-02-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./_images/experiments/kmeans_clustering_02_02.png" id="fig-kmeans-02-02" class="img-fluid figure-img" data-ref-parent="fig-kmeans-02">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-kmeans-02-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b)
+</figcaption>
+</figure>
+</div>
+<div id="fig-kmeans-02-03" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-kmeans-02-03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./_images/experiments/kmeans_clustering_02_03.png" id="fig-kmeans-02-03" class="img-fluid figure-img" data-ref-parent="fig-kmeans-02">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-kmeans-02-03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c)
+</figcaption>
+</figure>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-kmeans-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8: Comparison of identified clusters and ground truth labels of penguin species. Only 3 pairwise plots out of the 6 are included here.
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="experiment-2-representation-learning-via-self-organizing-map" class="level3" data-number="4.5">
+<h3 data-number="4.5" class="anchored" data-anchor-id="experiment-2-representation-learning-via-self-organizing-map"><span class="header-section-number">4.5</span> Experiment 2: Representation learning via Self-Organizing Map</h3>
+<p>The <code>MiniSom</code> class from the <code>minisom</code> library was used to learn the representation of the dataset. First the dataset was temporarily limited to two features and was treated as it had arbitrary dimensionality. The fitted map exhibited a topographic error of less than 1% (0.3%) confirming that the map is mathematically smooth and has effectively preserved the neighborhood relationships of the original high-dimensional data. Knowing this, we can visualize the flattened map of the SOM, the so-called two-dimensional U-matrix that displays the SOM grid with colors according to the average distance of the neighbors for each node represented as pixels, as depicted in <a href="#fig-som-learning-01-01" class="quarto-xref">Figure&nbsp;9</a>. Although the quantization error is also small, being 0.39, considering the standardized feature space with small dimensionality, this suggest that the map itself does not hug the data points closely as <a href="#fig-som-learning-01-02" class="quarto-xref">Figure&nbsp;10</a> verifies this. Rather, with this configuration, the map behaves like a “principal curve” or a thick snake, winding through the center of the data density.</p>
+<div id="fig-som-learning-01-01" class="quarto-float quarto-figure quarto-figure-center anchored" width="95%">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-som-learning-01-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./_images/experiments/som_representation_learning_01_01.png" id="fig-som-learning-01-01" class="img-fluid figure-img" style="width:95.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-som-learning-01-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9
+</figcaption>
+</figure>
+</div>
+<div id="fig-som-learning-01-02" class="quarto-float quarto-figure quarto-figure-center anchored" width="80%">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-som-learning-01-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./_images/experiments/som_representation_learning_01_02.png" id="fig-som-learning-01-02" class="img-fluid figure-img" style="width:80.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-som-learning-01-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10
+</figcaption>
+</figure>
+</div>
+<p>Returning to the complete, preprocessed dataset with four features, another SOM was fitted exhibiting a topographic error of around 1% (1.2%) and a quantization error of 0.453. The flattened map was obtained as displayed in <a href="#fig-som-learning-02-01" class="quarto-xref">Figure&nbsp;11</a>. Once the dimensionality is no longer 2, it becomes challenging to visualize the convergence of the nodes. When the dataset is treated as an <span class="math inline">\(N\)</span>-dimensional dataset, we can use <em>PCA</em> to get a glimps on the convergence considering 3 principal component plots, as depicted in <a href="#fig-som-learning-02-02" class="quarto-xref">Figure&nbsp;12</a> and <a href="#fig-som-learning-02-03" class="quarto-xref">Figure&nbsp;13</a>. In this case, the hidden 4th dimension explains so little variance that the visual provides an accurate state of the convergence, but this becomes less likely as the dimensionality of the dataset increases and the more irregularly the data points are clustered.</p>
+<p>After optimizing the hyperparameters, an SOM with topographic error of around 2% (1.8%) and a quantization error of 0.451 was obtained. This is depicted in <a href="#fig-som-learning-03-01" class="quarto-xref">Figure&nbsp;14</a>, <a href="#fig-som-learning-03-02" class="quarto-xref">Figure&nbsp;15</a> and <a href="#fig-som-learning-03-03" class="quarto-xref">Figure&nbsp;16</a>.</p>
+<div id="fig-som-learning-02-01" class="quarto-float quarto-figure quarto-figure-center anchored" width="95%">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-som-learning-02-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./_images/experiments/som_representation_learning_02_01.png" id="fig-som-learning-02-01" class="img-fluid figure-img" style="width:95.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-som-learning-02-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;11
+</figcaption>
+</figure>
+</div>
+<div id="fig-som-learning-02-02" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-som-learning-02-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./_images/experiments/som_representation_learning_02_02.png" id="fig-som-learning-02-02" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-som-learning-02-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;12
+</figcaption>
+</figure>
+</div>
+<div id="fig-som-learning-02-03" class="quarto-float quarto-figure quarto-figure-center anchored" width="80%">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-som-learning-02-03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./_images/experiments/som_representation_learning_02_03.png" id="fig-som-learning-02-03" class="img-fluid figure-img" style="width:80.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-som-learning-02-03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13
+</figcaption>
+</figure>
+</div>
+<div id="fig-som-learning-03-01" class="quarto-float quarto-figure quarto-figure-center anchored" width="95%">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-som-learning-03-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./_images/experiments/som_representation_learning_03_01.png" id="fig-som-learning-03-01" class="img-fluid figure-img" style="width:95.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-som-learning-03-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;14
+</figcaption>
+</figure>
+</div>
+<div id="fig-som-learning-03-02" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-som-learning-03-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./_images/experiments/som_representation_learning_03_02.png" id="fig-som-learning-03-02" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-som-learning-03-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;15
+</figcaption>
+</figure>
+</div>
+<div id="fig-som-learning-03-03" class="quarto-float quarto-figure quarto-figure-center anchored" width="80%">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-som-learning-03-03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./_images/experiments/som_representation_learning_03_03.png" id="fig-som-learning-03-03" class="img-fluid figure-img" style="width:80.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-som-learning-03-03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;16
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="experiment-3-clustering-via-segmenting-the-self-organizing-map-representation" class="level3" data-number="4.6">
+<h3 data-number="4.6" class="anchored" data-anchor-id="experiment-3-clustering-via-segmenting-the-self-organizing-map-representation"><span class="header-section-number">4.6</span> Experiment 3: Clustering via segmenting the Self-Organizing Map representation</h3>
+<p>The SOM representation itself discretizes the dataset yet if non-linear patterns are to be captured a larger, more flexible grid is required, by which it is expected that a real cluster will be covered by multiple nodes of the SOM grid. Therefore, we may apply <em>Agglomerative Clustering</em> on the learned representation to find clusters in it on a higher level. These cluster labels, obtained through the best-matching unit (BMU), then can be used for each data point, as depicted in <a href="#fig-som-clustering-01-01" class="quarto-xref">Figure&nbsp;17</a> and <a href="#fig-som-clustering-02-01" class="quarto-xref">Figure&nbsp;18</a> for the SOM with manually selected and optimized hyperparameters, respectively.</p>
+<div id="fig-som-clustering-01-01" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-som-clustering-01-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./_images/experiments/som_clustering_01_01.png" id="fig-som-clustering-01-01" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-som-clustering-01-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;17
+</figcaption>
+</figure>
+</div>
+<div id="fig-som-clustering-02-01" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-som-clustering-02-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./_images/experiments/som_clustering_02_01.png" id="fig-som-clustering-02-01" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-som-clustering-02-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="performance-evaluation" class="level3" data-number="4.7">
+<h3 data-number="4.7" class="anchored" data-anchor-id="performance-evaluation"><span class="header-section-number">4.7</span> Performance evaluation</h3>
+<p>The SOM-based clustering outperformed K-means clustering by finding irregularly shaped clusters that aligned better with the real groups of the dataset. The optimized version further improved the performance.</p>
+<div id="tbl-performance" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Performance evaluation of the clustering approaches.
+</figcaption>
+<div aria-describedby="tbl-performance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 34%">
+<col style="width: 17%">
+<col style="width: 18%">
+<col style="width: 15%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Experiment</th>
+<th style="text-align: right;">Homogeneity</th>
+<th style="text-align: right;">Completeness</th>
+<th style="text-align: right;">V-measure</th>
+<th style="text-align: right;">Accuracy</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">K-means clustering</td>
+<td style="text-align: right;">0.798</td>
+<td style="text-align: right;">0.773</td>
+<td style="text-align: right;">0.786</td>
+<td style="text-align: right;">0.915</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SOM-based clustering</td>
+<td style="text-align: right;">0.896</td>
+<td style="text-align: right;">0.906</td>
+<td style="text-align: right;">0.901</td>
+<td style="text-align: right;">0.974</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">SOM-based (opt.) clustering</td>
+<td style="text-align: right;"><strong>0.920</strong></td>
+<td style="text-align: right;"><strong>0.936</strong></td>
+<td style="text-align: right;"><strong>0.928</strong></td>
+<td style="text-align: right;"><strong>0.980</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+
+</section>
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-datascience_pm_workflow" class="csl-entry" role="listitem">
+DataScience-PM.com. 2024. <span>“What Is a Data Science Workflow?”</span> 2024. <a href="https://www.datascience-pm.com/data-science-workflow/">https://www.datascience-pm.com/data-science-workflow/</a>.
+</div>
+<div id="ref-illinois_exploration" class="csl-entry" role="listitem">
+Ellison, Tori, and Julie Deeke. 2025. <span>“Data Science Exploration: A Second-Semester Exploration into the World of Data Science.”</span> University of Illinois Urbana–Champaign, Department of Statistics. 2025. <a href="https://exploration.stat.illinois.edu/">https://exploration.stat.illinois.edu/</a>.
+</div>
+<div id="ref-geeksforgeeks_som" class="csl-entry" role="listitem">
+GeeksforGeeks. 2025. <span>“Self Organizing Maps – Kohonen Maps.”</span> 2025. <a href="https://www.geeksforgeeks.org/python/self-organising-maps-kohonen-maps/">https://www.geeksforgeeks.org/python/self-organising-maps-kohonen-maps/</a>.
+</div>
+</div></section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

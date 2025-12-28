@@ -36,7 +36,7 @@ while from the practical aspect, we expect to get hands on experience in using K
 
 Additionally, we will use 2D visualizations to **explore**, **understand** and **explain** **patterns** in the data. We will get hands on experience how unsupervised and representation learning works along with how to visualize high-dimensional data in a way that is interpretable for the human eye.
 
-![Bird's eye view of the project.](./_images/overview.png){#fig-intro}
+![Bird's eye view of the project.](./images/overview.png){#fig-intro}
 
 
 
@@ -76,9 +76,9 @@ The trained model is evaluated on never before seen samples that we refer to as 
 
 In this stage, models get deployed, observed and refinements are initiated to start the cycle again.
 
-![General pipeline of Data Science. Figure by @datascience_pm_workflow.](_images/ds-pipeline-1.png){#fig-background-01 width=80%}
+![General pipeline of Data Science. Figure by @datascience_pm_workflow.](images/ds-pipeline-1.png){#fig-background-01 width=80%}
 
-![Graphic summary of the Data Science Pipeline. Figure by @illinois_exploration.](_images/ds-pipeline-2.png){#fig-background-02}
+![Graphic summary of the Data Science Pipeline. Figure by @illinois_exploration.](images/ds-pipeline-2.png){#fig-background-02}
 
 
 
@@ -145,9 +145,9 @@ Inertia is "a measure of how internally coherent clusters are". It assumes that 
 - performs poorly on elongated clusters or manifolds with irregular shapes
 - not normalized: lower values are better, zero is optimal, yet in higher-dimensions distances get inflated
 
-![K-means behavior illustrated on simple synthetic datasets with different shapes.](_images/kmeans_behavior_01.png){#fig-background-03}
+![K-means behavior illustrated on simple synthetic datasets with different shapes.](images/kmeans_behavior_01.png){#fig-background-03}
 
-![K-means behavior illustrated on simple synthetic datasets with different shapes.](_images/kmeans_behavior_02.png){#fig-background-04}
+![K-means behavior illustrated on simple synthetic datasets with different shapes.](images/kmeans_behavior_02.png){#fig-background-04}
 
 The algorithm follows an iterative process that consists of three main steps.
 
@@ -180,7 +180,7 @@ The Hidden Layer types can vary depending on the architecture:
 * **Recurrent (Repetitive) Layers:** Applied to sequence data, such as text or periods of time
 * **Pooling & Dropout Layers:** used to avoid overfitting and minimize dimensions, respectively
 
-![A diagram of a feedforward artificial neural network illustrating the flow of data through input, hidden, and output layers.](./_images/ann.png){#fig-background-05 width=80%}
+![A diagram of a feedforward artificial neural network illustrating the flow of data through input, hidden, and output layers.](./images/ann.png){#fig-background-05 width=80%}
 
 *AWS* states that "individual nodes can be simple, but when connected in a dense network,
 they solve complex problems." Supervised learning, in which the network is trained on labeled data (e.g., displaying computer images labeled "cat" until it learns to identify a cat), is traditionally the most well-known use of this design. The data isn't always labeled, though. This leads us to unsupervised techniques such as clustering.
@@ -280,15 +280,15 @@ One important insight is that the identified clusters do not separate clearly an
 
 Comparison of the identified clusters against ground truth labels are depicted in @fig-kmeans-02.
 
-![Clusters identified via the *K-means* algorithm.](./_images/experiments/kmeans_clustering_01.png){#fig-kmeans-01 width=85%}
+![Clusters identified via the *K-means* algorithm.](./images/experiments/kmeans_clustering_01.png){#fig-kmeans-01 width=85%}
 
 ::: {#fig-kmeans-02 width=85%}
 
-![](./_images/experiments/kmeans_clustering_02_01.png){#fig-kmeans-02-01}
+![](./images/experiments/kmeans_clustering_02_01.png){#fig-kmeans-02-01}
 
-![](./_images/experiments/kmeans_clustering_02_02.png){#fig-kmeans-02-02}
+![](./images/experiments/kmeans_clustering_02_02.png){#fig-kmeans-02-02}
 
-![](./_images/experiments/kmeans_clustering_02_03.png){#fig-kmeans-02-03}
+![](./images/experiments/kmeans_clustering_02_03.png){#fig-kmeans-02-03}
 
 Comparison of identified clusters and ground truth labels of penguin species. Only 3 pairwise plots out of the 6 are included here.
 :::
@@ -299,25 +299,25 @@ Comparison of identified clusters and ground truth labels of penguin species. On
 
 The `MiniSom` class from the `minisom` library was used to learn the representation of the dataset. First the dataset was temporarily limited to two features and was treated as it had arbitrary dimensionality. The fitted map exhibited a topographic error of less than 1% (0.3%) confirming that the map is mathematically smooth and has effectively preserved the neighborhood relationships of the original high-dimensional data. Knowing this, we can visualize the flattened map of the SOM, the so-called two-dimensional U-matrix that displays the SOM grid with colors according to the average distance of the neighbors for each node represented as pixels, as depicted in @fig-som-learning-01-01. Although the quantization error is also small, being 0.39, considering the standardized feature space with small dimensionality, this suggest that the map itself does not hug the data points closely as @fig-som-learning-01-02 verifies this. Rather, with this configuration, the map behaves like a "principal curve" or a thick snake, winding through the center of the data density.
 
-![](./_images/experiments/som_representation_learning_01_01.png){#fig-som-learning-01-01 width=95%}
+![](./images/experiments/som_representation_learning_01_01.png){#fig-som-learning-01-01 width=95%}
 
-![](./_images/experiments/som_representation_learning_01_02.png){#fig-som-learning-01-02 width=80%}
+![](./images/experiments/som_representation_learning_01_02.png){#fig-som-learning-01-02 width=80%}
 
 Returning to the complete, preprocessed dataset with four features, another SOM was fitted exhibiting a topographic error of around 1% (1.2%) and a quantization error of 0.453. The flattened map was obtained as displayed in @fig-som-learning-02-01. Once the dimensionality is no longer 2, it becomes challenging to visualize the convergence of the nodes. When the dataset is treated as an $N$-dimensional dataset, we can use *PCA* to get a glimps on the convergence considering 3 principal component plots, as depicted in @fig-som-learning-02-02 and @fig-som-learning-02-03. In this case, the hidden 4th dimension explains so little variance that the visual provides an accurate state of the convergence, but this becomes less likely as the dimensionality of the dataset increases and the more irregularly the data points are clustered.
 
 After optimizing the hyperparameters, an SOM with topographic error of around 2% (1.8%) and a quantization error of 0.451 was obtained. This is depicted in @fig-som-learning-03-01, @fig-som-learning-03-02 and @fig-som-learning-03-03.
 
-![](./_images/experiments/som_representation_learning_02_01.png){#fig-som-learning-02-01 width=95%}
+![](./images/experiments/som_representation_learning_02_01.png){#fig-som-learning-02-01 width=95%}
 
-![](./_images/experiments/som_representation_learning_02_02.png){#fig-som-learning-02-02}
+![](./images/experiments/som_representation_learning_02_02.png){#fig-som-learning-02-02}
 
-![](./_images/experiments/som_representation_learning_02_03.png){#fig-som-learning-02-03 width=80%}
+![](./images/experiments/som_representation_learning_02_03.png){#fig-som-learning-02-03 width=80%}
 
-![](./_images/experiments/som_representation_learning_03_01.png){#fig-som-learning-03-01 width=95%}
+![](./images/experiments/som_representation_learning_03_01.png){#fig-som-learning-03-01 width=95%}
 
-![](./_images/experiments/som_representation_learning_03_02.png){#fig-som-learning-03-02}
+![](./images/experiments/som_representation_learning_03_02.png){#fig-som-learning-03-02}
 
-![](./_images/experiments/som_representation_learning_03_03.png){#fig-som-learning-03-03 width=80%}
+![](./images/experiments/som_representation_learning_03_03.png){#fig-som-learning-03-03 width=80%}
 
 
 \newpage
@@ -325,9 +325,9 @@ After optimizing the hyperparameters, an SOM with topographic error of around 2%
 
 The SOM representation itself discretizes the dataset yet if non-linear patterns are to be captured a larger, more flexible grid is required, by which it is expected that a real cluster will be covered by multiple nodes of the SOM grid. Therefore, we may apply *Agglomerative Clustering* on the learned representation to find clusters in it on a higher level. These cluster labels, obtained through the best-matching unit (BMU), then can be used for each data point, as depicted in @fig-som-clustering-01-01 and @fig-som-clustering-02-01 for the SOM with manually selected and optimized hyperparameters, respectively.
 
-![](./_images/experiments/som_clustering_01_01.png){#fig-som-clustering-01-01}
+![](./images/experiments/som_clustering_01_01.png){#fig-som-clustering-01-01}
 
-![](./_images/experiments/som_clustering_02_01.png){#fig-som-clustering-02-01}
+![](./images/experiments/som_clustering_02_01.png){#fig-som-clustering-02-01}
 
 
 ### Performance evaluation

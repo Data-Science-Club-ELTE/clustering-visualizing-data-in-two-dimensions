@@ -70,66 +70,48 @@ def place_node_edges(som, ax=None):
 				ax.plot([current[feat_x], neighbor[feat_x]],
 						[current[feat_y], neighbor[feat_y]], 'k-', alpha=0.3)
 
-
-def plot_3_feature(X_tr, node_weights_flat, X_other=None, other_style_attributes={}, other_label="other", axis_label="Feature", title=None, figsize=(10, 6)):
+def plot_three_variables_pairwise(layers:list[dict]=[],
+								  axis_label="Feature", title=None, figsize=(10, 6)):
 	fig, axes = plt.subplots(1, 3, figsize=figsize, sharex=True, sharey=True)
 
-	ax = axes[0]
-	ax.scatter(X_tr[:, 0], X_tr[:, 1], **point_style_attributes, label="train data (normal)")
-	ax.scatter(node_weights_flat[:, 0], node_weights_flat[:, 1], **node_style_attributes, label="SOM node")
+	default_style_attributes = {"color": "none", "edgecolor": "cornflowerblue", "s": 30, "alpha": .9}
 
-	if X_other is not None:
-		ax.scatter(X_other[:, 0], X_other[:, 1], **{**point_style_attributes, **other_style_attributes}, label=other_label)
-	
-	ax.set_xlabel(f"{axis_label} 1")
-	ax.set_ylabel(f"{axis_label} 2")
+	for li, l in enumerate(layers):
+		X = l.get('data', None)
+		style_attributes = l.get('styles', {})
+		label = l.get('label', None)
 
-	ax = axes[1]
-	ax.scatter(X_tr[:, 0], X_tr[:, 2], **point_style_attributes, label="train data (normal)")
-	ax.scatter(node_weights_flat[:, 0], node_weights_flat[:, 2], **node_style_attributes, label="SOM node")
+		style_attributes = {**default_style_attributes, **style_attributes}
 
-	if X_other is not None:
-		ax.scatter(X_other[:, 0], X_other[:, 2], **{**point_style_attributes, **other_style_attributes}, label=other_label)
-	
-	ax.set_xlabel(f"{axis_label} 1")
-	ax.set_ylabel(f"{axis_label} 3")
+		ax = axes[0]
+		ax.scatter(X[:, 0], X[:, 1], **style_attributes, label=label)
+		ax.set_xlabel(f"{axis_label} 1")
+		ax.set_ylabel(f"{axis_label} 2")
 
-	ax = axes[2]
-	ax.scatter(X_tr[:, 1], X_tr[:, 2], **point_style_attributes, label="train data (normal)")
-	ax.scatter(node_weights_flat[:, 1], node_weights_flat[:, 2], **node_style_attributes, label="SOM node")
+		ax = axes[1]
+		ax.scatter(X[:, 0], X[:, 2], **style_attributes, label=label)
+		ax.set_xlabel(f"{axis_label} 1")
+		ax.set_ylabel(f"{axis_label} 3")
 
-	if X_other is not None:
-		ax.scatter(X_other[:, 1], X_other[:, 2], **{**point_style_attributes, **other_style_attributes}, label=other_label)
-	
-	ax.set_xlabel(f"{axis_label} 2")
-	ax.set_ylabel(f"{axis_label} 3")
+		ax = axes[2]
+		ax.scatter(X[:, 1], X[:, 2], **style_attributes, label=label)
+		ax.set_xlabel(f"{axis_label} 2")
+		ax.set_ylabel(f"{axis_label} 3")
 
 	for ax in axes:
 		ax.set_aspect("equal")
+
+	ax.legend(loc='center left', bbox_to_anchor=(1.02, .93))
 
 	if title is not None:
 		plt.suptitle(title)
 
 	plt.tight_layout()
 	plt.show()
+	
 
-
-def plot_in_3PC(X_tr, nw_shape, nw_flat):
+def plot_in_3PC(layers:list[dict]=[]):
 	fig = go.Figure()
-
-	fig.add_trace(go.Scatter3d(
-		x=X_tr[:, 0], y=X_tr[:, 1], z=X_tr[:, 2],
-		mode='markers',
-		marker=dict(size=3, symbol="square", opacity=.5),
-		name='Training data (normal)'
-	))
-
-	fig.add_trace(go.Scatter3d(
-		x=nw_flat[:, 0], y=nw_flat[:, 1], z=nw_flat[:, 2],
-		mode='markers',
-		marker=dict(size=5, color='black', opacity=0.1),
-		name='SOM nodes'
-	))
 
 	fig.update_layout(scene=dict(
 		xaxis_title="PC 1",
@@ -137,30 +119,54 @@ def plot_in_3PC(X_tr, nw_shape, nw_flat):
 		zaxis_title="PC 3",
 	))
 
-	rows, cols, _ = nw_shape
-	edges = []
+	for li, l in enumerate(layers):
+		lData = l.get('data', [])
+		lMarker = l.get('marker', dict(size=3, opacity=.9, color="cornflowerblue"))
+		lLabel = l.get('label', f"Layer {li}")
 
-	for i in range(rows):
-		for j in range(cols - 1):
-			a = i * cols + j
-			b = i * cols + (j + 1)
-			edges.append((a, b))
-
-	for i in range(rows - 1):
-		for j in range(cols):
-			a = i * cols + j
-			b = (i + 1) * cols + j
-			edges.append((a, b))
-
-	for a, b in edges:
 		fig.add_trace(go.Scatter3d(
-			x=[nw_flat[a, 0], nw_flat[b, 0]],
-			y=[nw_flat[a, 1], nw_flat[b, 1]],
-			z=[nw_flat[a, 2], nw_flat[b, 2]],
-			mode='lines',
-			line=dict(color='black', width=2),
-			showlegend=False
+			x=lData[:, 0], y=lData[:, 1], z=lData[:, 2],
+			mode='markers',
+			marker=lMarker,
+			name=lLabel
 		))
+
+		lNodeWeights = l.get('nodeWeights', None)
+		lGridShape = l.get('gridShape', None)
+
+		if lNodeWeights is not None and lGridShape is not None:
+
+			fig.add_trace(go.Scatter3d(
+				x=lNodeWeights[:, 0], y=lNodeWeights[:, 1], z=lNodeWeights[:, 2],
+				mode='markers',
+				marker=dict(size=5, color='black', opacity=0.1),
+				name='SOM nodes'
+			))
+
+			rows, cols, _ = lGridShape
+			edges = []
+
+			for i in range(rows):
+				for j in range(cols - 1):
+					a = i * cols + j
+					b = i * cols + (j + 1)
+					edges.append((a, b))
+
+			for i in range(rows - 1):
+				for j in range(cols):
+					a = i * cols + j
+					b = (i + 1) * cols + j
+					edges.append((a, b))
+
+			for a, b in edges:
+				fig.add_trace(go.Scatter3d(
+					x=[lNodeWeights[a, 0], lNodeWeights[b, 0]],
+					y=[lNodeWeights[a, 1], lNodeWeights[b, 1]],
+					z=[lNodeWeights[a, 2], lNodeWeights[b, 2]],
+					mode='lines',
+					line=dict(color='black', width=2),
+					showlegend=False
+				))
 
 	fig.update_layout(
 		width=900, 

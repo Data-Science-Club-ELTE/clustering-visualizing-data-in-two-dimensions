@@ -6,7 +6,7 @@ A solution for the exercise of [01_dataset](./01_dataset.md) by [@KorchmarosDani
 
 *Why is it important to drop values only after we've selected the features of interest, and not beforehand? What would happen in the other scenario?*
 
-It is important to drop values after selecting the features of interest, as the other way around we may accidentally delete rows that only had data we were never interested anyway. This results in less data overall to work with which can reduce the effectiveness of our model.
+It is important to drop values after selecting the features of interest, as the other way around we may accidentally delete rows that only had missing data we were never interested anyway. This results in less data overall to work with which can reduce the effectiveness of our model.
 
 ### Example 1
 

@@ -1,7 +1,7 @@
 ---
 title: "Clustering Data and Visualizing in 2D"
 toc: true
-toc-depth: 1
+toc-depth: 2
 number-sections: true
 bibliography: references.bib
 
@@ -35,6 +35,9 @@ while from the practical aspect, we expect to get hands on experience in using K
 Additionally, we will use 2D visualizations to **explore**, **understand** and **explain** **patterns** in the data. We will get hands on experience how unsupervised and representation learning works along with how to visualize high-dimensional data in a way that is interpretable for the human eye.
 
 ![Bird's eye view of the project.](./_images/overview.png)
+
+
+
 
 \newpage
 ## Background
@@ -140,9 +143,9 @@ Inertia is "a measure of how internally coherent clusters are". It assumes that 
 - performs poorly on elongated clusters or manifolds with irregular shapes
 - not normalized: lower values are better, zero is optimal, yet in higher-dimensions distances get inflated
 
-![K-means behavior illustrated on simple synthetic datasets with different shapes.](theory/images/kmeans_behavior_01.png)
+![K-means behavior illustrated on simple synthetic datasets with different shapes.](_images/kmeans_behavior_01.png)
 
-![K-means behavior illustrated on simple synthetic datasets with different shapes.](theory/images/kmeans_behavior_02.png)
+![K-means behavior illustrated on simple synthetic datasets with different shapes.](_images/kmeans_behavior_02.png)
 
 The algorithm follows an iterative process that consists of three main steps.
 
@@ -152,7 +155,6 @@ The algorithm follows an iterative process that consists of three main steps.
 
 then the difference between old and new centroids are calculated and the algorithm loops between steps 2) and 3) until this difference becomes small considering a threshold.
 
-<!-- ![Visualization of the iterative process of K-means.](theory/images/kmeans.gif) -->
 
 The documentation highlights yet another weakness of the algorithm at the stage of centroid initialization, as written, "K-means will always converge, however this may be to a local minimum". This outcome depends on the initial positions of the centroids, which if assigned randomly, may not find every cluster in the dataset. To address this, the algorithm in the *sklearn* library can be instructed to use a more intelligent initialization technique that places centroids distant from each other and can be used via the $init="\text{k-means++}"$ argument value. Besides the $n\_init$ parameter can be used to enhance this process, which is the "number of times the k-means algorithm is run with different centroid seeds" where the candidate with the best inertia is kept.
 
@@ -176,7 +178,7 @@ The Hidden Layer types can vary depending on the architecture:
 * **Recurrent (Repetitive) Layers:** Applied to sequence data, such as text or periods of time
 * **Pooling & Dropout Layers:** used to avoid overfitting and minimize dimensions, respectively
 
-![A diagram of a feedforward artificial neural network illustrating the flow of data through input, hidden, and output layers.](./theory/images/ann.png){#fig-ann width=80%}
+![A diagram of a feedforward artificial neural network illustrating the flow of data through input, hidden, and output layers.](./_images/ann.png){#fig-ann width=80%}
 
 *AWS* states that "individual nodes can be simple, but when connected in a dense network,
 they solve complex problems." Supervised learning, in which the network is trained on labeled data (e.g., displaying computer images labeled "cat" until it learns to identify a cat), is traditionally the most well-known use of this design. The data isn't always labeled, though. This leads us to unsupervised techniques such as clustering.
@@ -206,26 +208,61 @@ According to @geeksforgeeks_som, a Self-Organizing Map is an unsupervised neural
 \newpage
 ## Methodology
 
-1. Use *K-means* algorithm to cluster data points in their original $N$-dimensional space. Use the cluster assignments as membership predictions. Visualize the identified clusters in $2D$ feature plots, pairwise. Interpret the outputs, take notes of any strange patterns caused by the dimensionality collapse, if there's any. Visually compare the clustering against true labels. Evaluate the quality of clustering with the help of supervised and unsupervised metrics.
+1. Use the *K-means* algorithm to cluster data points in their original $N$-dimensional space. Use the cluster assignments as membership predictions. Visualize the identified clusters in $2D$ feature plots, pairwise. Interpret the outputs, take notes of any strange patterns caused by the dimensionality collapse, if there's any. Visually compare the clustering against true labels. Evaluate the quality of clustering with the help of supervised and unsupervised metrics.
 
-2. Use *Self-Organizing Maps (SOM)* to learn a representation of the data that can be visualized in two dimensions through the organized and flattened grid of the SOM.
+2. Use *Self-Organizing Maps (SOM)* to learn a representation of the dataset that can be visualized in two dimensions through the organized and flattened grid of the map.
 
-3. The SOM representation itself discretized the dataset yet if non-linear patterns are to be captured a larger, more flexible grid is required, by which it is expected that a real cluster will covered by multiple nodes in the grid. Therefore, we can apply *Agglomerative Clustering* to the learned representation to find high-level clusters in it. Use these cluster labels obtained via the best-matching unit (BMU) in the representation for each data point. Visually compare and evaluate the clustering against ground truth, and with the help of unsupervised metrics.
+3. Segment the learned representation via *Agglomerative Clustering*. Visually compare the clustering against true labels. Evaluate the quality of clustering with the help of supervised and unsupervised metrics.
 
-4. Compare the results obtained via the algorithms of *K-means* and *Self-Organizing Maps (SOM)*.
+4. Compare the clustering results of *K-means* and *Self-Organizing Maps*.
 
-5. Briefly introduce a better visualization of the flattened two-dimensional *Self-Organizing Maps (SOM)* visual.
+5. Briefly introduce a better visualization of the flattened two-dimensional *Self-Organizing Map* visual.
 
-\newpage
+
+
 ## Experiments
+
+The following experiments were conducted based on the methodology. Performance of each model was evaluated and summarized in @tbl-performance.
+
+1. Clustering via *K-means*
+2. Representation learning via *Self-Organizing Map (SOM)*
+   * Manual hyperparameter selection
+   * Optimized hyperparameter selection
+3. Clustering via segmenting the *Self-Organizing Map (SOM)* representation
 
 ### Dataset
 
-The `Palmer penguins` dataset was used during the experiments obtained from the `palmerpenguins` python library. The original shape of the dataset is 344 observations and 8 features, both categorical and numerical.
+The `Palmer penguins` dataset was used during the experiments obtained from the `palmerpenguins` python library. The original shape of the dataset is 344 observations and 8 features, including both categorical and numerical.
 
 ### Preprocessing
 
 The dataset was limited to the 4 numerical features of `bill_length_mm`, `bill_depth_mm`, `flipper_length_mm` and `body_mass_g`. Observations with missing values in these features were dropped, resulting in a total of 342 records. The features of this dataset were standardized.
+
+### Hyperparameters
+
+For the *K-means* algorithm, $K$ was specified as 3, implied by the three penguin species that we aim to separate. As for the SOM, three set of hyperparameters were tested. The first was defined manually as:
+
+* Grid size: $4 \times 37$
+* Neighborhood radius: $\sigma = \frac{max(d_1, d_2)}{3} \simeq 12.3$
+* Epochs: $100$
+* Learning rate: $\alpha = 0.5$
+* Topology: "rectangular",
+
+while the second as:
+
+* Grid size: $12 \times 12$
+* Neighborhood radius: $\sigma = \frac{max(d_1, d_2)}{3} = 4$
+* Epochs: $100$
+* Learning rate: $\alpha = 0.5$
+* Topology: "rectangular",
+
+finally, the third one was optimized for the downstream task of *agglomerative clustering* using *ward* linkage with the objective function to maximize the *silhouette score* for 3 target clusters, as follows:
+
+* Grid size: $13 \times 13$
+* Neighborhood radius: $\sigma = \frac{max(d_1, d_2)}{3} = 4.33$
+* Epochs: $39$
+* Learning rate: $\alpha = 0.6$
+* Topology: "rectangular"
 
 ### Experiment 1: K-means clustering
 
@@ -239,14 +276,7 @@ One important insight is that the identified clusters do not separate clearly an
 - Dataset itself **may not have clear separation** lines for the real groups: these borders can appear intermingled which can be amplified by the styling properties of the scatter plot such as the size of the marker
 - **Projection** from $4D$ to $2D$ **distorts** the **original structure**: those regions that appear as intermingled in the collapsed space do not overlap in the original $N$-dimensional feature space
 
-Comparison of the identified clusters against ground truth labels are depicted in @fig-kmeans-02. The accuracy and quality of the clustering were assessed as included in @tbl-kmeans. Besides, it's worth mentioning that even this simple dataset with 4 features required 6 individual pairwise plots to observe the patterns from every angle.
-
-| Homogeneity | Completeness | V-measure | Accuracy |
-|------------:|-------------:|----------:|---------:|
-|       0.798 |        0.773 |     0.786 |    0.915 |
-
-: Performance evaluation of the *K-means* clustering. {#tbl-kmeans}
-
+Comparison of the identified clusters against ground truth labels are depicted in @fig-kmeans-02.
 
 ![Clusters identified via the *K-means* algorithm.](./_images/experiments/kmeans_clustering_01.png){#fig-kmeans-01 width=85%}
 
@@ -260,5 +290,55 @@ Comparison of the identified clusters against ground truth labels are depicted i
 
 Comparison of identified clusters and ground truth labels of penguin species. Only 3 pairwise plots out of the 6 are included here.
 :::
+
+
+\newpage
+### Experiment 2: Representation learning via Self-Organizing Map (SOM)
+
+The `MiniSom` class from the `minisom` library was used to learn the representation of the dataset. First the dataset was temporarily limited to two features and was treated as it had arbitrary dimensionality. The fitted map exhibited a topographic error of less than 1% (0.3%) confirming that the map is mathematically smooth and has effectively preserved the neighborhood relationships of the original high-dimensional data. Knowing this, we can visualize the flattened map of the SOM, the so-called two-dimensional U-matrix that displays the SOM grid with colors according to the average distance of the neighbors for each node represented as pixels, as depicted in @fig-som-learning-01-01. Although the quantization error is also small, being 0.39, considering the standardized feature space with small dimensionality, this suggest that the map itself does not hug the data points closely as @fig-som-learning-01-02 verifies this. Rather, with this configuration, the map behaves like a "principal curve" or a thick snake, winding through the center of the data density.
+
+![](./_images/experiments/som_representation_learning_01_01.png){#fig-som-learning-01-01 width=95%}
+
+![](./_images/experiments/som_representation_learning_01_02.png){#fig-som-learning-01-02 width=80%}
+
+Returning to the complete, preprocessed dataset with four features, another SOM was fitted exhibiting a topographic error of around 1% (1.2%) and a quantization error of 0.453. The flattened map was obtained as displayed in @fig-som-learning-02-01. Once the dimensionality is no longer 2, it becomes challenging to visualize the convergence of the nodes. When the dataset is treated as an $N$-dimensional dataset, we can use *PCA* to get a glimps on the convergence considering 3 principal component plots, as depicted in @fig-som-learning-02-02 and @fig-som-learning-02-03. In this case, the hidden 4th dimension explains so little variance that the visual provides an accurate state of the convergence, but this becomes less likely as the dimensionality of the dataset increases and the more irregularly the data points are clustered.
+
+After optimizing the hyperparameters, an SOM with topographic error of around 2% (1.8%) and a quantization error of 0.451 was obtained. This is depicted in @fig-som-learning-03-01, @fig-som-learning-03-02 and @fig-som-learning-03-03.
+
+![](./_images/experiments/som_representation_learning_02_01.png){#fig-som-learning-02-01 width=95%}
+
+![](./_images/experiments/som_representation_learning_02_02.png){#fig-som-learning-02-02}
+
+![](./_images/experiments/som_representation_learning_02_03.png){#fig-som-learning-02-03 width=80%}
+
+![](./_images/experiments/som_representation_learning_03_01.png){#fig-som-learning-03-01 width=95%}
+
+![](./_images/experiments/som_representation_learning_03_02.png){#fig-som-learning-03-02}
+
+![](./_images/experiments/som_representation_learning_03_03.png){#fig-som-learning-03-03 width=80%}
+
+
+\newpage
+### Experiment 3: SOM representation based clustering
+
+The SOM representation itself discretizes the dataset yet if non-linear patterns are to be captured a larger, more flexible grid is required, by which it is expected that a real cluster will be covered by multiple nodes of the SOM grid. Therefore, we may apply *Agglomerative Clustering* on the learned representation to find clusters in it on a higher level. These cluster labels, obtained through the best-matching unit (BMU), then can be used for each data point, as depicted in @fig-som-clustering-01-01 and @fig-som-clustering-02-01 for the SOM with manually selected and optimized hyperparameters, respectively.
+
+![](./_images/experiments/som_clustering_01_01.png){#fig-som-clustering-01-01}
+
+![](./_images/experiments/som_clustering_02_01.png){#fig-som-clustering-02-01}
+
+
+### Performance evaluation
+
+The SOM-based clustering outperformed K-means clustering by finding irregularly shaped clusters that aligned better with the real groups of the dataset. The optimized version further improved the performance.
+
+| Experiment                       | Homogeneity     | Completeness     | V-measure     | Accuracy     |
+|:---------------------------------|----------------:|-----------------:|--------------:|-------------:|
+| K-means clustering               |           0.798 |            0.773 |         0.786 |        0.915 |
+| SOM-based clustering             |           0.896 |            0.906 |         0.901 |        0.974 |
+| SOM-based (opt.) clustering      |       **0.920** |        **0.936** |     **0.928** |    **0.980** |
+
+: Performance evaluation of the clustering approaches. {#tbl-performance}
+
 
 \newpage

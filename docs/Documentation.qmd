@@ -343,4 +343,16 @@ The SOM-based clustering outperformed K-means clustering by finding irregularly 
 : Performance evaluation of the clustering approaches. {#tbl-performance}
 
 
+### Enhancement of the SOM visual
+
+Since the traditional visuals of the SOM can sometimes be challenging to interpret, and cross referencing the two separate maps may be error prone, an enhanced SOM visual is created using the `lilypond` library (@balogh_lilypond), which provides a more intuitive way to visualize the SOM representation. The traditional approach is displayed in @fig-som-enhancement-01, while the enhanced version is depicted in @fig-som-enhancement-02-01.
+
+Besides, a novel, the so called rhizome layer, is added in @fig-som-enhancement-02-02, to visualize the edges between $1st$ and $2nd$ BMU pairs implied by the data points: all connections and only those violating the neighborhood constraint, in each subplot, respectively.
+
+![](./images/experiments/som_visual_enhancement_01.png){#fig-som-enhancement-01}
+
+![](./images/experiments/som_visual_enhancement_02_01.png){#fig-som-enhancement-02-01}
+
+![](./images/experiments/som_visual_enhancement_02_02.png){#fig-som-enhancement-02-02}
+
 \newpage

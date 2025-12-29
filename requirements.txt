@@ -7,3 +7,5 @@ ipykernel
 jupyter
 minisom
 pyswarms
+
+git+https://github.com/matthew-balogh/lilypond@experimental

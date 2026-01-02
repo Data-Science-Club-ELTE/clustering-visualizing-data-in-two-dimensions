@@ -5,6 +5,12 @@ toc-depth: 2
 number-sections: true
 bibliography: references.bib
 
+author:   
+  - Mate Balogh
+  - Daniel Korchmaros
+  - Bishara Hodali
+  - Barnabas Hellman
+
 project:
   header-includes:
     - \usepackage{titlesec}
@@ -25,16 +31,19 @@ format:
 \newpage
 ## Introduction
 
-In this project, titled as *Clustering Data and Visualizing in 2D*, we aim to group similar data points of a dataset together and then visualize *where* and *how* those groups separate from each other and explore what characterizes them. From a theoretical point of view, we plan to explore consepts such as:
+In this project, titled as *Clustering Data and Visualizing in 2D*, we aim to group similar data points of a dataset together and then visualize *where* and *how* those groups separate from each other. From a theoretical point of view, we plan to explore concepts such as:
 
 - General Data Science pipeline
 - Unsupervised learning
 - Representation learning
 - Neural networks,
 
-while from the practical aspect, we expect to get hands on experience in using K-means and Self-Organizing Map (SOM) algorithms. The diagram below provides a high level view on the topics covered in the project and how they build upon each other.
+while from the practical aspect, we expect to get hands on experience in using:
 
-Additionally, we will use 2D visualizations to **explore**, **understand** and **explain** **patterns** in the data. We will get hands on experience how unsupervised and representation learning works along with how to visualize high-dimensional data in a way that is interpretable for the human eye.
+- *K-means*
+- *Self-Organizing Map (SOM)* algorithms
+
+The diagram below provides a high level view on the topics covered in the project and how they build upon each other. As included in the diagram, the use of 2D visualizations are considered as the primary tool to **explore**, **understand** and **explain** **patterns** in the data. Besides, expectations are we will get a closer look at how unsupervised and representation learning works along with how we can visualize high-dimensional data, in a way that is interpretable for the human eye, using SOMs.
 
 ![Bird's eye view of the project.](./images/overview.png){#fig-intro}
 
@@ -44,9 +53,9 @@ Additionally, we will use 2D visualizations to **explore**, **understand** and *
 \newpage
 ## Background
 
-### General Data Science pipeline
+### General Data Science Pipeline
 
-@fig-background-01 depicts the general workflow of Data Science while @fig-background-02 displays a broader view on the process. Elaboration of the main steps are as follows.
+@fig-background-01 provides a general view on the *Data Science* workflow, while @fig-background-02 displays a broader view of it. Elaboration of the main steps are as follows.
 
 **Define and understand the problem**
 
@@ -58,9 +67,9 @@ In this step, it is important to collect the data that is suitable for the job. 
 
 **Data cleaning and preprocessing**
 
-Raw data can include missing entries, duplicates, extreme outliers to name a few. Un- or improperly processed data will lead to bad models.
+Raw data can include missing entries, duplicates, extreme outliers, to name a few characteristics that needs handling. Un- or improperly processed data will lead to bad models.
 
-**Data exploration (EDA)**
+**Data exploration**
 
 In this phase—often referred to as *Exploratory Data Analysis*—characteristics of the dataset are summarized and visualized. It helps in understanding what the collected data tells us: answer questions right away, see patterns or anomalies that could guide in building a better model.
 
@@ -78,7 +87,7 @@ In this stage, models get deployed, observed and refinements are initiated to st
 
 ![General pipeline of Data Science. Figure by @datascience_pm_workflow.](images/ds-pipeline-1.png){#fig-background-01 width=80%}
 
-![Graphic summary of the Data Science Pipeline. Figure by @illinois_exploration.](images/ds-pipeline-2.png){#fig-background-02}
+![Graphic summary of the Data Science pipeline. Figure by @illinois_exploration.](images/ds-pipeline-2.png){#fig-background-02}
 
 
 
@@ -88,11 +97,11 @@ In this stage, models get deployed, observed and refinements are initiated to st
 
 #### Supervised
 
-In supervised feature learning, the input data is labelled, meaning data given to the model includes input-label pairs. This resorts in a representation with high label prediction accuracy. Examples include supervised neural networks, multilayer perceptrons, and dictionary learning.
+In supervised feature learning, the input data is labeled, meaning data given to the model includes input-label pairs. This resorts in a representation with high label prediction accuracy. Examples include supervised neural networks, multilayer perceptrons, and dictionary learning.
 
 #### Unsupervised
 
-Unsupervised feature learning uses unlabelled input data, it learns features by analyzing the relationship between data points. Examples include Clustering (K-means), ICA and matrix factorization.
+Unsupervised feature learning uses unlabelled input data, it learns patterns by analyzing the relationship between data points. Examples include Clustering (K-means), ICA and matrix factorization.
 
 #### Other methods
 
@@ -108,7 +117,8 @@ Representation/feature learning is a broader term for techniques that allow an M
 
 An autoencoder is a type of neural network architecture that is having three core components: the encoder, the decoder, and the latent-space representation. The encoder compresses the input to a lower latent-space representation via weight matrixes biases and a nonlinear activation function and then the decoder reconstructs it.
 
-#### Prototype Learning
+#### Prototype learning
+
 Prototype learning is a family of methods where a model represents each class, cluster, or concept using prototypes—vectors in a learned feature space that act as representative examples. A model then makes predictions by comparing new samples to these prototypes. These prototypes provide an abstract representation for many natural categories and concepts.
 
 
@@ -117,24 +127,24 @@ Prototype learning is a family of methods where a model represents each class, c
 
 Clustering is an unsupervised machine learning technique that learns patterns from the features of a dataset without using labels. *K-means* is a simple algorithm that attempts to partition samples into $K$ groups with roughly equal variance, although the latter is not guaranteed.
 
-K-means clustering is prototype learning algorithm used to categorize n (usually vectors of unlabelled data) items into k number of clusters. It is useful for identifying natural groupings of data and structuring raw data. Determining what k should be is important for the segmentation to be meaningful and there are multiple methods for determining the optimal value for k. K-means has a variety of uses due to its simplicity and effectiveness, including data segmentation, image compression and anomaly detection.
+#### Algorithm in a nutshell
+
+K-means clustering is a prototype learning algorithm used to categorize $N$ (usually vectors of unlabelled data) items into $K$ number of clusters. It is useful for identifying natural groupings of data and structuring raw data. Determining what $K$ should be is important for the segmentation to be meaningful and there are multiple methods for determining the optimal value. K-means has a variety of uses due to its simplicity and effectiveness, including data segmentation, image compression and anomaly detection.
 
 * Unsupervised machine learning technique
 * "K-means" = "K averages" / "K central tendencies" / "K centroids"
 * Can be looked at as a prototyping tool that discretizes the data into $K$ prototypes
 
-#### Algorithm in a nutshell
+The algorithm will categorize the inputs into $K$ clusters based on similarity. Measuring of similarity is done with the square of the Euclidean distance of the data vectors. Summarized, the iterative algorithm works as follows:
 
-The algorithm will categorize the inputs into k clusters based on similarity. Measuring of similarity is done with the square of the Euclidean distance of the data vectors. Summarized, the algorithm works as follows:
+1. **Initialization:** Randomly select $K$ number of centerpoints for the clusters, called centroids.
+2. **Assignment:** Each data point is assigned to a cluster based on which centroid is the nearest to it (using Euclidean distance).
+3. **Update:** We recalculate the position of each centroid based on the average of the data points in each cluster.
+4. **Repeat:** We repeat this process until the position of each centroid is unchanged or we reach a pre-defined iteration limit.
 
-1. Initialization: Randomly select k number of centerpoints for the clusters, called centroids.
-2. Assignment: Each data point is assigned to a cluster based on which centroid is the nearest to it (using Euclidean distance).
-3. Update: We recalculate the position of each centroid based on the average of the data points in each cluster.
-4. Repeat: We repeat this process until the position of each centroid is unchanged or we reach a pre-defined iteration limit
+#### Additional details
 
-#### Algorithm in details
-
-According to the *Scikit Learn Documentation*, the K-means algorithm "divides a set of $N$ samples $X$ into $K$ disjoint clusters $C$, each described by the mean $\mu_j$ of the samples in the cluster". These means are referred to as *centroids*, and despite living in the same space, they are usually not part of the dataset. The number $K$ is required to be initialized, along with the starting positions of the centroids. The algorithm has an objective function that minimizes the criterion of *within-cluster sum-of-squares*, the so-called *inertia*.
+According to the @scikit_learn_doc, the K-means algorithm "divides a set of $N$ samples $X$ into $K$ disjoint clusters $C$, each described by the mean $\mu_j$ of the samples in the cluster". These means are referred to as *centroids*, and despite living in the same space, they are usually not part of the dataset. The number $K$ is required to be initialized, along with the starting positions of the centroids. The algorithm has an objective function that minimizes the criterion of *within-cluster sum-of-squares*, the so-called *inertia*.
 
 $$
 \sum^n_{i=0} \min_{\mu_j \in C} (|| x_i - \mu_j ||^2)
@@ -145,58 +155,48 @@ Inertia is "a measure of how internally coherent clusters are". It assumes that 
 - performs poorly on elongated clusters or manifolds with irregular shapes
 - not normalized: lower values are better, zero is optimal, yet in higher-dimensions distances get inflated
 
-![K-means behavior illustrated on simple synthetic datasets with different shapes.](images/kmeans_behavior_01.png){#fig-background-03}
+![K-means behavior illustrated on simple synthetic datasets with different shapes. Figure by @scikit_learn_clustering_doc.](images/kmeans_behavior_01.png){#fig-background-03}
 
-![K-means behavior illustrated on simple synthetic datasets with different shapes.](images/kmeans_behavior_02.png){#fig-background-04}
+![K-means behavior illustrated on simple synthetic datasets with different shapes. Figure by @scikit_learn_clustering_doc.](images/kmeans_behavior_02.png){#fig-background-04}
 
-The algorithm follows an iterative process that consists of three main steps.
-
-- initialize centroid positions
-- assign each sample to its nearest centroid
-- create new centroids by taking the mean value of the samples assigned to each previous centroid,
-
-then the difference between old and new centroids are calculated and the algorithm loops between steps 2) and 3) until this difference becomes small considering a threshold.
-
-
-The documentation highlights yet another weakness of the algorithm at the stage of centroid initialization, as written, "K-means will always converge, however this may be to a local minimum". This outcome depends on the initial positions of the centroids, which if assigned randomly, may not find every cluster in the dataset. To address this, the algorithm in the *sklearn* library can be instructed to use a more intelligent initialization technique that places centroids distant from each other and can be used via the $init="\text{k-means++}"$ argument value. Besides the $n\_init$ parameter can be used to enhance this process, which is the "number of times the k-means algorithm is run with different centroid seeds" where the candidate with the best inertia is kept.
+The documentation highlights yet another weakness of the algorithm at the stage of centroid initialization, as written, "K-means will always converge, however this may be to a local minimum". This outcome depends on the initial positions of the centroids, which if assigned randomly, may not find every cluster in the dataset. To address this, the algorithm in the *sklearn* library can be instructed to use a more intelligent initialization technique that places centroids distant from each other and can be used via the $init=\text{"k-means++"}$ argument value. Besides the $n\_init$ parameter can be used to enhance this process, which is the "number of times the k-means algorithm is run with different centroid seeds" where the candidate with the best inertia is kept.
 
 
 
 ### Neural Networks
 
-In order to comprehend the function of deep learning in unsupervised tasks, it is necessary to first define a neural network in its broadest definition. Neural networks, which are built to imitate biological processes, are fundamentally the engines for modern artificial intelligence. A neural network is described by *Amazon Web Services (AWS)* as a "method in artificial intelligence that teaches computers to process data in a way that is inspired by the human brain."
+In order to comprehend the function of deep learning in unsupervised tasks, it is necessary to first define a neural network in its broadest definition. Neural networks, which are built to imitate biological processes, are fundamentally the engines for modern artificial intelligence. A neural network is described by @aws_neural_network as a "method in artificial intelligence that teaches computers to process data in a way that is inspired by the human brain."
 
 #### Layered structure
 
-According to *GeeksforGeeks*, Artificial Neural Network (ANN) layers can be explained as follows:
+According to @gfg_ann_layers, *Artificial Neural Network (ANN)* layers can be explained as follows:
 
-1. **Input Layer:** This is the network's entry point. It transfers raw data—such as an image's pixels or a dataset's columns—to the layers that follow. Key role: this layer merely buffers and sends the input signals to the buried levels; no calculation takes place here.
-2. **Hidden Layers:** The real "learning" and processing takes place in these layers, which are situated between the input and output layers. A network is referred to as "Deep Learning" if it has one or more hidden layers. Key role: they use mathematical processes (weighted sums) and activation functions (like *sigma* or *ReLU*) to add non-linearity to extract features and patterns from the data.
+1. **Input layer:** This is the network's entry point. It transfers raw data—such as an image's pixels or a dataset's columns—to the layers that follow. Key role: this layer merely buffers and sends the input signals to the buried levels; no calculation takes place here.
+2. **Hidden layers:** The real "learning" and processing takes place in these layers, which are situated between the input and output layers. A network is referred to as "Deep Learning" if it has one or more hidden layers. Key role: they use mathematical processes (weighted sums) and activation functions (like *sigma* or *ReLU*) to add non-linearity to extract features and patterns from the data.
+3. **Output layer:** Predictions, output scores.
 
-The Hidden Layer types can vary depending on the architecture:
+The *hidden layer* types can vary depending on the architecture:
 
-* **Dense (Fully Connected) Layers:** Every neuron connects to every neuron in the next layer
-* **Convolutional (Convergent) Layers:** Mostly used to identify geometric sequence in images
-* **Recurrent (Repetitive) Layers:** Applied to sequence data, such as text or periods of time
-* **Pooling & Dropout Layers:** used to avoid overfitting and minimize dimensions, respectively
+* **Dense (Fully Connected) layers:** Every neuron connects to every neuron in the next layer
+* **Convolutional (Convergent) layers:** Mostly used to identify geometric sequence in images
+* **Recurrent (Repetitive) layers:** Applied to sequence data, such as text or periods of time
+* **Pooling & Dropout layers:** Used to avoid overfitting and minimize dimensions, respectively
 
-![A diagram of a feedforward artificial neural network illustrating the flow of data through input, hidden, and output layers.](./images/ann.png){#fig-background-05 width=80%}
+![A diagram of a feedforward artificial neural network illustrating the flow of data through input, hidden, and output layers. Figure by @medium_nn101_part1.](./images/ann.png){#fig-background-05 width=80%}
 
-*AWS* states that "individual nodes can be simple, but when connected in a dense network,
-they solve complex problems." Supervised learning, in which the network is trained on labeled data (e.g., displaying computer images labeled "cat" until it learns to identify a cat), is traditionally the most well-known use of this design. The data isn't always labeled, though. This leads us to unsupervised techniques such as clustering.
+*AWS* states that "individual nodes can be simple, but when connected in a dense network, they solve complex problems." Supervised learning, in which the network is trained on labeled data (e.g., displaying computer images labeled "cat" until it learns to identify a cat), is traditionally the most well-known use of this design. The data isn't always labeled, though. This leads us to unsupervised techniques such as clustering.
 
-#### Neural Networks in Clustering
+#### Neural Networks in clustering
 
-Clustering is a key method in unsupervised learning, claims *IBM*. It involves "identifying distinct groups of data points" in which the machine must independently recognize patterns without the need for human assistance or pre-existing classifications. According to *IBM*, "clustering algorithms identify distinct groups of data points... such that data points in the same group are more similar to other data points in the same group than those in other groups."
+Clustering is a key method in unsupervised learning, according to @ibm_clustering. It involves "identifying distinct groups of data points" in which the machine must independently recognize patterns without the need for human assistance or pre-existing classifications. According to *IBM*, "clustering algorithms identify distinct groups of data points... such that data points in the same group are more similar to other data points in the same group than those in other groups."
 
-A shift in architecture is necessary to combine these two concepts—by utilizing a Neural Network, which is typically supervised, with Clustering, that is unsupervised. How does the network learn if there are no labels to fix it? Standard feed-forward networks aren't ideally suited for this, as discussed in the *Cross Validated (Stack Exchange)* forum. Rather, certain designs are needed. The usage of automatic encoders is one popular strategy that was brought up in the conversation. One contributor points out that clustering can be accomplished by "training an autoencoder... and then clustering the data in the bottom layer." In this case, the clustering process is far more effective than attempting to group raw, high-dimensional data since the neural network learns to compress data (dimensionality reduction) into a dense representation.
+A shift in architecture is necessary to combine these two concepts—by utilizing a Neural Network, which is typically supervised, with Clustering, that is unsupervised. How does the network learn if there are no labels to fix it? Standard feed-forward networks aren't ideally suited for this, as discussed in the @stackexchange_ann_clustering. Rather, certain designs are needed. The usage of automatic encoders is one popular strategy that was brought up in the conversation. One contributor points out that clustering can be accomplished by "training an autoencoder... and then clustering the data in the bottom layer." In this case, the clustering process is far more effective than attempting to group raw, high-dimensional data since the neural network learns to compress data (dimensionality reduction) into a dense representation.
 
-However, there is a more direct "neural" approach to clustering that relies on competitive
-learning instead of error correction which is *Self-Organizing Map (SOM)*.
+However, there is a more direct "neural" approach to clustering that relies on competitive learning instead of error correction which is *Self-Organizing Map*.
 
 ### Self-Organizing Maps (SOM)
 
-According to @geeksforgeeks_som, a Self-Organizing Map is an unsupervised neural network algorithm that maps high-dimensional data to a lower dimensional grid making interpretation and visualization of the data easier. It follows both competitive and collaborative learning to fit a dataset using neighborhood defining parameters and functions to not only update the best matching unit of a given input data but also its neighborhood with a decay over a certain number of epochs. The learning process is performed in the following steps:
+According to @geeksforgeeks_som, a *Self-Organizing Map (SOM)* is an unsupervised neural network algorithm that maps high-dimensional data to a lower dimensional grid making interpretation and visualization of the data easier. It follows both competitive and collaborative learning to fit a dataset using neighborhood defining parameters and functions to not only update the best matching unit of a given input data but also its neighborhood with a decay over a certain number of epochs. The learning process is performed in the following steps:
 
 1. **Setup:** The grid of the SOM is defined by its dimensions and hyperparameters such as the neighborhood settings.
 2. **Initialization:** The weights (the positions in the $N$-dimensional space) of the grid nodes are initialized randomly.
@@ -297,7 +297,9 @@ Comparison of identified clusters and ground truth labels of penguin species. On
 \newpage
 ### Experiment 2: Representation learning via Self-Organizing Map
 
-The `MiniSom` class from the `minisom` library was used to learn the representation of the dataset. First the dataset was temporarily limited to two features and was treated as it had arbitrary dimensionality. The fitted map exhibited a topographic error of less than 1% (0.3%) confirming that the map is mathematically smooth and has effectively preserved the neighborhood relationships of the original high-dimensional data. Knowing this, we can visualize the flattened map of the SOM, the so-called two-dimensional U-matrix that displays the SOM grid with colors according to the average distance of the neighbors for each node represented as pixels, as depicted in @fig-som-learning-01-01. Although the quantization error is also small, being 0.39, considering the standardized feature space with small dimensionality, this suggest that the map itself does not hug the data points closely as @fig-som-learning-01-02 verifies this. Rather, with this configuration, the map behaves like a "principal curve" or a thick snake, winding through the center of the data density.
+The `MiniSom` class from the `minisom` library was used to learn the representation of the dataset.
+
+First the dataset was temporarily limited to two features and was treated as it had arbitrary dimensionality. The fitted map exhibited a topographic error of less than 1% (0.3%) confirming that the map is mathematically smooth and has effectively preserved the neighborhood relationships of the original high-dimensional data. Knowing this, we can visualize the flattened map of the SOM, the so-called two-dimensional U-matrix that displays the SOM grid with colors according to the average distance of the neighbors for each node represented as pixels, as depicted in @fig-som-learning-01-01. Although the quantization error is also small, being 0.39, considering the standardized feature space with small dimensionality, this suggest that the map itself does not hug the data points closely as @fig-som-learning-01-02 verifies this. Rather, with this configuration, the map behaves like a "principal curve" or a thick snake, winding through the center of the data density.
 
 ![](./images/experiments/som_representation_learning_01_01.png){#fig-som-learning-01-01 width=95%}
 
@@ -323,7 +325,7 @@ After optimizing the hyperparameters, an SOM with topographic error of around 2%
 \newpage
 ### Experiment 3: Clustering via segmenting the Self-Organizing Map representation
 
-The SOM representation itself discretizes the dataset yet if non-linear patterns are to be captured a larger, more flexible grid is required, by which it is expected that a real cluster will be covered by multiple nodes of the SOM grid. Therefore, we may apply *Agglomerative Clustering* on the learned representation to find clusters in it on a higher level. These cluster labels, obtained through the best-matching unit (BMU), then can be used for each data point, as depicted in @fig-som-clustering-01-01 and @fig-som-clustering-02-01 for the SOM with manually selected and optimized hyperparameters, respectively.
+The SOM representation itself discretizes the dataset yet if non-linear patterns are to be captured a larger, more flexible grid is required, by which it is expected that a real cluster will be covered by multiple nodes of the SOM grid. Therefore, we may apply *Agglomerative Clustering* on the learned representation to find clusters in it on a higher level. These cluster labels, obtained through the best-matching unit (BMU), then can be used for each data point, as depicted in @fig-som-clustering-01-01 and @fig-som-clustering-02-01 for the SOM with the manually selected and optimized hyperparameters, respectively.
 
 ![](./images/experiments/som_clustering_01_01.png){#fig-som-clustering-01-01}
 
@@ -347,7 +349,7 @@ The SOM-based clustering outperformed K-means clustering by finding irregularly 
 
 Since the traditional visuals of the SOM can sometimes be challenging to interpret, and cross referencing the two separate maps may be error prone, an enhanced SOM visual is created using the `lilypond` library (@balogh_lilypond), which provides a more intuitive way to visualize the SOM representation. The traditional approach is displayed in @fig-som-enhancement-01, while the enhanced version is depicted in @fig-som-enhancement-02-01.
 
-Besides, a novel, the so called rhizome layer, is added in @fig-som-enhancement-02-02, to visualize the edges between $1st$ and $2nd$ BMU pairs implied by the data points: all connections and only those violating the neighborhood constraint, in each subplot, respectively.
+Besides, an additional layer is created in @fig-som-enhancement-02-02, to visualize the edges between $1st$ and $2nd$ BMU pairs implied by the data points: all connections and only those violating the neighborhood constraint, in each subplot, respectively.
 
 ![](./images/experiments/som_visual_enhancement_01.png){#fig-som-enhancement-01}
 

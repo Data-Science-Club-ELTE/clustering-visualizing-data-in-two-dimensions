@@ -6,6 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Mate Balogh">
+<meta name="author" content="Daniel Korchmaros">
+<meta name="author" content="Bishara Hodali">
+<meta name="author" content="Barnabas Hellman">
 
 <title>Clustering Data and Visualizing in 2D</title>
 <style>
@@ -114,6 +118,15 @@ window.Quarto = {
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Authors</div>
+    <div class="quarto-title-meta-contents">
+             <p>Mate Balogh </p>
+             <p>Daniel Korchmaros </p>
+             <p>Bishara Hodali </p>
+             <p>Barnabas Hellman </p>
+          </div>
+  </div>
     
   
     
@@ -126,15 +139,19 @@ window.Quarto = {
 
 <section id="introduction" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">1</span> Introduction</h2>
-<p>In this project, titled as <em>Clustering Data and Visualizing in 2D</em>, we aim to group similar data points of a dataset together and then visualize <em>where</em> and <em>how</em> those groups separate from each other and explore what characterizes them. From a theoretical point of view, we plan to explore consepts such as:</p>
+<p>In this project, titled as <em>Clustering Data and Visualizing in 2D</em>, we aim to group similar data points of a dataset together and then visualize <em>where</em> and <em>how</em> those groups separate from each other. From a theoretical point of view, we plan to explore concepts such as:</p>
 <ul>
 <li>General Data Science pipeline</li>
 <li>Unsupervised learning</li>
 <li>Representation learning</li>
 <li>Neural networks,</li>
 </ul>
-<p>while from the practical aspect, we expect to get hands on experience in using K-means and Self-Organizing Map (SOM) algorithms. The diagram below provides a high level view on the topics covered in the project and how they build upon each other.</p>
-<p>Additionally, we will use 2D visualizations to <strong>explore</strong>, <strong>understand</strong> and <strong>explain</strong> <strong>patterns</strong> in the data. We will get hands on experience how unsupervised and representation learning works along with how to visualize high-dimensional data in a way that is interpretable for the human eye.</p>
+<p>while from the practical aspect, we expect to get hands on experience in using:</p>
+<ul>
+<li><em>K-means</em></li>
+<li><em>Self-Organizing Map (SOM)</em> algorithms</li>
+</ul>
+<p>The diagram below provides a high level view on the topics covered in the project and how they build upon each other. As included in the diagram, the use of 2D visualizations are considered as the primary tool to <strong>explore</strong>, <strong>understand</strong> and <strong>explain</strong> <strong>patterns</strong> in the data. Besides, expectations are we will get a closer look at how unsupervised and representation learning works along with how we can visualize high-dimensional data, in a way that is interpretable for the human eye, using SOMs.</p>
 <div id="fig-intro" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-intro-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -149,15 +166,15 @@ Figure&nbsp;1: Bird’s eye view of the project.
 <section id="background" class="level2" data-number="2">
 <h2 data-number="2" class="anchored" data-anchor-id="background"><span class="header-section-number">2</span> Background</h2>
 <section id="general-data-science-pipeline" class="level3" data-number="2.1">
-<h3 data-number="2.1" class="anchored" data-anchor-id="general-data-science-pipeline"><span class="header-section-number">2.1</span> General Data Science pipeline</h3>
-<p><a href="#fig-background-01" class="quarto-xref">Figure&nbsp;2</a> depicts the general workflow of Data Science while <a href="#fig-background-02" class="quarto-xref">Figure&nbsp;3</a> displays a broader view on the process. Elaboration of the main steps are as follows.</p>
+<h3 data-number="2.1" class="anchored" data-anchor-id="general-data-science-pipeline"><span class="header-section-number">2.1</span> General Data Science Pipeline</h3>
+<p><a href="#fig-background-01" class="quarto-xref">Figure&nbsp;2</a> provides a general view on the <em>Data Science</em> workflow, while <a href="#fig-background-02" class="quarto-xref">Figure&nbsp;3</a> displays a broader view of it. Elaboration of the main steps are as follows.</p>
 <p><strong>Define and understand the problem</strong></p>
 <p>The problem needs to be clearly defined and then turned into a Data Science task, so clear steps can be defined on how to solve it.</p>
 <p><strong>Data collection</strong></p>
 <p>In this step, it is important to collect the data that is suitable for the job. It is a good idea to collect more data than you need as data sets can be incomplete and dirty. Although, it is very important to highlight that the <em>quality</em> of the data is more important than the <em>quantity</em>.</p>
 <p><strong>Data cleaning and preprocessing</strong></p>
-<p>Raw data can include missing entries, duplicates, extreme outliers to name a few. Un- or improperly processed data will lead to bad models.</p>
-<p><strong>Data exploration (EDA)</strong></p>
+<p>Raw data can include missing entries, duplicates, extreme outliers, to name a few characteristics that needs handling. Un- or improperly processed data will lead to bad models.</p>
+<p><strong>Data exploration</strong></p>
 <p>In this phase—often referred to as <em>Exploratory Data Analysis</em>—characteristics of the dataset are summarized and visualized. It helps in understanding what the collected data tells us: answer questions right away, see patterns or anomalies that could guide in building a better model.</p>
 <p><strong>Model building</strong></p>
 <p>In this part, the preprocessed data is used to train a model that discovers hidden patterns or learn from it in order to make predictions for the future.</p>
@@ -181,7 +198,7 @@ Figure&nbsp;2: General pipeline of Data Science. Figure by <span class="citation
 <img src="images/ds-pipeline-2.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-background-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3: Graphic summary of the Data Science Pipeline. Figure by <span class="citation" data-cites="illinois_exploration">Ellison and Deeke (<a href="#ref-illinois_exploration" role="doc-biblioref">2025</a>)</span>.
+Figure&nbsp;3: Graphic summary of the Data Science pipeline. Figure by <span class="citation" data-cites="illinois_exploration">Ellison and Deeke (<a href="#ref-illinois_exploration" role="doc-biblioref">2025</a>)</span>.
 </figcaption>
 </figure>
 </div>
@@ -191,11 +208,11 @@ Figure&nbsp;3: Graphic summary of the Data Science Pipeline. Figure by <span cla
 <!-- Models usually fall into two categories: *Supervised* and *Unsupervised*. Supervised models have a known outcome, it has labeled data. For example, a model trained on spam emails would include examples of both spam and non-spam emails, from which it „learns” what a spam email looks like. Unsupervised models, on the other hand, don’t have such labels, they compare patterns and trends in data. For example, if you wanted to know the shopping habits of your customers based on their preferences. Unsupervised learning can be challenging as its output can be vague and inconcrete which can lead to bias. It's evaluation is completely different than that of supervised approaches. Still unsupervised learning has the advantage to spot hiddenor previously not seen paterns, that supervised models cannot recognize unless specifically trained to do so. -->
 <section id="supervised" class="level4" data-number="2.2.1">
 <h4 data-number="2.2.1" class="anchored" data-anchor-id="supervised"><span class="header-section-number">2.2.1</span> Supervised</h4>
-<p>In supervised feature learning, the input data is labelled, meaning data given to the model includes input-label pairs. This resorts in a representation with high label prediction accuracy. Examples include supervised neural networks, multilayer perceptrons, and dictionary learning.</p>
+<p>In supervised feature learning, the input data is labeled, meaning data given to the model includes input-label pairs. This resorts in a representation with high label prediction accuracy. Examples include supervised neural networks, multilayer perceptrons, and dictionary learning.</p>
 </section>
 <section id="unsupervised" class="level4" data-number="2.2.2">
 <h4 data-number="2.2.2" class="anchored" data-anchor-id="unsupervised"><span class="header-section-number">2.2.2</span> Unsupervised</h4>
-<p>Unsupervised feature learning uses unlabelled input data, it learns features by analyzing the relationship between data points. Examples include Clustering (K-means), ICA and matrix factorization.</p>
+<p>Unsupervised feature learning uses unlabelled input data, it learns patterns by analyzing the relationship between data points. Examples include Clustering (K-means), ICA and matrix factorization.</p>
 </section>
 <section id="other-methods" class="level4" data-number="2.2.3">
 <h4 data-number="2.2.3" class="anchored" data-anchor-id="other-methods"><span class="header-section-number">2.2.3</span> Other methods</h4>
@@ -211,32 +228,32 @@ Figure&nbsp;3: Graphic summary of the Data Science Pipeline. Figure by <span cla
 <p>An autoencoder is a type of neural network architecture that is having three core components: the encoder, the decoder, and the latent-space representation. The encoder compresses the input to a lower latent-space representation via weight matrixes biases and a nonlinear activation function and then the decoder reconstructs it.</p>
 </section>
 <section id="prototype-learning" class="level4" data-number="2.3.2">
-<h4 data-number="2.3.2" class="anchored" data-anchor-id="prototype-learning"><span class="header-section-number">2.3.2</span> Prototype Learning</h4>
+<h4 data-number="2.3.2" class="anchored" data-anchor-id="prototype-learning"><span class="header-section-number">2.3.2</span> Prototype learning</h4>
 <p>Prototype learning is a family of methods where a model represents each class, cluster, or concept using prototypes—vectors in a learned feature space that act as representative examples. A model then makes predictions by comparing new samples to these prototypes. These prototypes provide an abstract representation for many natural categories and concepts.</p>
 </section>
 </section>
 <section id="k-means-clustering" class="level3" data-number="2.4">
 <h3 data-number="2.4" class="anchored" data-anchor-id="k-means-clustering"><span class="header-section-number">2.4</span> K-means Clustering</h3>
 <p>Clustering is an unsupervised machine learning technique that learns patterns from the features of a dataset without using labels. <em>K-means</em> is a simple algorithm that attempts to partition samples into <span class="math inline">\(K\)</span> groups with roughly equal variance, although the latter is not guaranteed.</p>
-<p>K-means clustering is prototype learning algorithm used to categorize n (usually vectors of unlabelled data) items into k number of clusters. It is useful for identifying natural groupings of data and structuring raw data. Determining what k should be is important for the segmentation to be meaningful and there are multiple methods for determining the optimal value for k. K-means has a variety of uses due to its simplicity and effectiveness, including data segmentation, image compression and anomaly detection.</p>
+<section id="algorithm-in-a-nutshell" class="level4" data-number="2.4.1">
+<h4 data-number="2.4.1" class="anchored" data-anchor-id="algorithm-in-a-nutshell"><span class="header-section-number">2.4.1</span> Algorithm in a nutshell</h4>
+<p>K-means clustering is a prototype learning algorithm used to categorize <span class="math inline">\(N\)</span> (usually vectors of unlabelled data) items into <span class="math inline">\(K\)</span> number of clusters. It is useful for identifying natural groupings of data and structuring raw data. Determining what <span class="math inline">\(K\)</span> should be is important for the segmentation to be meaningful and there are multiple methods for determining the optimal value. K-means has a variety of uses due to its simplicity and effectiveness, including data segmentation, image compression and anomaly detection.</p>
 <ul>
 <li>Unsupervised machine learning technique</li>
 <li>“K-means” = “K averages” / “K central tendencies” / “K centroids”</li>
 <li>Can be looked at as a prototyping tool that discretizes the data into <span class="math inline">\(K\)</span> prototypes</li>
 </ul>
-<section id="algorithm-in-a-nutshell" class="level4" data-number="2.4.1">
-<h4 data-number="2.4.1" class="anchored" data-anchor-id="algorithm-in-a-nutshell"><span class="header-section-number">2.4.1</span> Algorithm in a nutshell</h4>
-<p>The algorithm will categorize the inputs into k clusters based on similarity. Measuring of similarity is done with the square of the Euclidean distance of the data vectors. Summarized, the algorithm works as follows:</p>
+<p>The algorithm will categorize the inputs into <span class="math inline">\(K\)</span> clusters based on similarity. Measuring of similarity is done with the square of the Euclidean distance of the data vectors. Summarized, the iterative algorithm works as follows:</p>
 <ol type="1">
-<li>Initialization: Randomly select k number of centerpoints for the clusters, called centroids.</li>
-<li>Assignment: Each data point is assigned to a cluster based on which centroid is the nearest to it (using Euclidean distance).</li>
-<li>Update: We recalculate the position of each centroid based on the average of the data points in each cluster.</li>
-<li>Repeat: We repeat this process until the position of each centroid is unchanged or we reach a pre-defined iteration limit</li>
+<li><strong>Initialization:</strong> Randomly select <span class="math inline">\(K\)</span> number of centerpoints for the clusters, called centroids.</li>
+<li><strong>Assignment:</strong> Each data point is assigned to a cluster based on which centroid is the nearest to it (using Euclidean distance).</li>
+<li><strong>Update:</strong> We recalculate the position of each centroid based on the average of the data points in each cluster.</li>
+<li><strong>Repeat:</strong> We repeat this process until the position of each centroid is unchanged or we reach a pre-defined iteration limit.</li>
 </ol>
 </section>
-<section id="algorithm-in-details" class="level4" data-number="2.4.2">
-<h4 data-number="2.4.2" class="anchored" data-anchor-id="algorithm-in-details"><span class="header-section-number">2.4.2</span> Algorithm in details</h4>
-<p>According to the <em>Scikit Learn Documentation</em>, the K-means algorithm “divides a set of <span class="math inline">\(N\)</span> samples <span class="math inline">\(X\)</span> into <span class="math inline">\(K\)</span> disjoint clusters <span class="math inline">\(C\)</span>, each described by the mean <span class="math inline">\(\mu_j\)</span> of the samples in the cluster”. These means are referred to as <em>centroids</em>, and despite living in the same space, they are usually not part of the dataset. The number <span class="math inline">\(K\)</span> is required to be initialized, along with the starting positions of the centroids. The algorithm has an objective function that minimizes the criterion of <em>within-cluster sum-of-squares</em>, the so-called <em>inertia</em>.</p>
+<section id="additional-details" class="level4" data-number="2.4.2">
+<h4 data-number="2.4.2" class="anchored" data-anchor-id="additional-details"><span class="header-section-number">2.4.2</span> Additional details</h4>
+<p>According to the <span class="citation" data-cites="scikit_learn_doc">Scikit-learn developers (<a href="#ref-scikit_learn_doc" role="doc-biblioref">2026b</a>)</span>, the K-means algorithm “divides a set of <span class="math inline">\(N\)</span> samples <span class="math inline">\(X\)</span> into <span class="math inline">\(K\)</span> disjoint clusters <span class="math inline">\(C\)</span>, each described by the mean <span class="math inline">\(\mu_j\)</span> of the samples in the cluster”. These means are referred to as <em>centroids</em>, and despite living in the same space, they are usually not part of the dataset. The number <span class="math inline">\(K\)</span> is required to be initialized, along with the starting positions of the centroids. The algorithm has an objective function that minimizes the criterion of <em>within-cluster sum-of-squares</em>, the so-called <em>inertia</em>.</p>
 <p><span class="math display">\[
 \sum^n_{i=0} \min_{\mu_j \in C} (|| x_i - \mu_j ||^2)
 \]</span></p>
@@ -251,7 +268,7 @@ Figure&nbsp;3: Graphic summary of the Data Science Pipeline. Figure by <span cla
 <img src="images/kmeans_behavior_01.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-background-03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4: K-means behavior illustrated on simple synthetic datasets with different shapes.
+Figure&nbsp;4: K-means behavior illustrated on simple synthetic datasets with different shapes. Figure by <span class="citation" data-cites="scikit_learn_clustering_doc">Scikit-learn developers (<a href="#ref-scikit_learn_clustering_doc" role="doc-biblioref">2026a</a>)</span>.
 </figcaption>
 </figure>
 </div>
@@ -261,36 +278,30 @@ Figure&nbsp;4: K-means behavior illustrated on simple synthetic datasets with di
 <img src="images/kmeans_behavior_02.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-background-04-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;5: K-means behavior illustrated on simple synthetic datasets with different shapes.
+Figure&nbsp;5: K-means behavior illustrated on simple synthetic datasets with different shapes. Figure by <span class="citation" data-cites="scikit_learn_clustering_doc">Scikit-learn developers (<a href="#ref-scikit_learn_clustering_doc" role="doc-biblioref">2026a</a>)</span>.
 </figcaption>
 </figure>
 </div>
-<p>The algorithm follows an iterative process that consists of three main steps.</p>
-<ul>
-<li>initialize centroid positions</li>
-<li>assign each sample to its nearest centroid</li>
-<li>create new centroids by taking the mean value of the samples assigned to each previous centroid,</li>
-</ul>
-<p>then the difference between old and new centroids are calculated and the algorithm loops between steps 2) and 3) until this difference becomes small considering a threshold.</p>
-<p>The documentation highlights yet another weakness of the algorithm at the stage of centroid initialization, as written, “K-means will always converge, however this may be to a local minimum”. This outcome depends on the initial positions of the centroids, which if assigned randomly, may not find every cluster in the dataset. To address this, the algorithm in the <em>sklearn</em> library can be instructed to use a more intelligent initialization technique that places centroids distant from each other and can be used via the <span class="math inline">\(init="\text{k-means++}"\)</span> argument value. Besides the <span class="math inline">\(n\_init\)</span> parameter can be used to enhance this process, which is the “number of times the k-means algorithm is run with different centroid seeds” where the candidate with the best inertia is kept.</p>
+<p>The documentation highlights yet another weakness of the algorithm at the stage of centroid initialization, as written, “K-means will always converge, however this may be to a local minimum”. This outcome depends on the initial positions of the centroids, which if assigned randomly, may not find every cluster in the dataset. To address this, the algorithm in the <em>sklearn</em> library can be instructed to use a more intelligent initialization technique that places centroids distant from each other and can be used via the <span class="math inline">\(init=\text{"k-means++"}\)</span> argument value. Besides the <span class="math inline">\(n\_init\)</span> parameter can be used to enhance this process, which is the “number of times the k-means algorithm is run with different centroid seeds” where the candidate with the best inertia is kept.</p>
 </section>
 </section>
 <section id="neural-networks" class="level3" data-number="2.5">
 <h3 data-number="2.5" class="anchored" data-anchor-id="neural-networks"><span class="header-section-number">2.5</span> Neural Networks</h3>
-<p>In order to comprehend the function of deep learning in unsupervised tasks, it is necessary to first define a neural network in its broadest definition. Neural networks, which are built to imitate biological processes, are fundamentally the engines for modern artificial intelligence. A neural network is described by <em>Amazon Web Services (AWS)</em> as a “method in artificial intelligence that teaches computers to process data in a way that is inspired by the human brain.”</p>
+<p>In order to comprehend the function of deep learning in unsupervised tasks, it is necessary to first define a neural network in its broadest definition. Neural networks, which are built to imitate biological processes, are fundamentally the engines for modern artificial intelligence. A neural network is described by <span class="citation" data-cites="aws_neural_network">Amazon Web Services (AWS) (<a href="#ref-aws_neural_network" role="doc-biblioref">2026</a>)</span> as a “method in artificial intelligence that teaches computers to process data in a way that is inspired by the human brain.”</p>
 <section id="layered-structure" class="level4" data-number="2.5.1">
 <h4 data-number="2.5.1" class="anchored" data-anchor-id="layered-structure"><span class="header-section-number">2.5.1</span> Layered structure</h4>
-<p>According to <em>GeeksforGeeks</em>, Artificial Neural Network (ANN) layers can be explained as follows:</p>
+<p>According to <span class="citation" data-cites="gfg_ann_layers">GeeksforGeeks (<a href="#ref-gfg_ann_layers" role="doc-biblioref">2026</a>)</span>, <em>Artificial Neural Network (ANN)</em> layers can be explained as follows:</p>
 <ol type="1">
-<li><strong>Input Layer:</strong> This is the network’s entry point. It transfers raw data—such as an image’s pixels or a dataset’s columns—to the layers that follow. Key role: this layer merely buffers and sends the input signals to the buried levels; no calculation takes place here.</li>
-<li><strong>Hidden Layers:</strong> The real “learning” and processing takes place in these layers, which are situated between the input and output layers. A network is referred to as “Deep Learning” if it has one or more hidden layers. Key role: they use mathematical processes (weighted sums) and activation functions (like <em>sigma</em> or <em>ReLU</em>) to add non-linearity to extract features and patterns from the data.</li>
+<li><strong>Input layer:</strong> This is the network’s entry point. It transfers raw data—such as an image’s pixels or a dataset’s columns—to the layers that follow. Key role: this layer merely buffers and sends the input signals to the buried levels; no calculation takes place here.</li>
+<li><strong>Hidden layers:</strong> The real “learning” and processing takes place in these layers, which are situated between the input and output layers. A network is referred to as “Deep Learning” if it has one or more hidden layers. Key role: they use mathematical processes (weighted sums) and activation functions (like <em>sigma</em> or <em>ReLU</em>) to add non-linearity to extract features and patterns from the data.</li>
+<li><strong>Output layer:</strong> Predictions, output scores.</li>
 </ol>
-<p>The Hidden Layer types can vary depending on the architecture:</p>
+<p>The <em>hidden layer</em> types can vary depending on the architecture:</p>
 <ul>
-<li><strong>Dense (Fully Connected) Layers:</strong> Every neuron connects to every neuron in the next layer</li>
-<li><strong>Convolutional (Convergent) Layers:</strong> Mostly used to identify geometric sequence in images</li>
-<li><strong>Recurrent (Repetitive) Layers:</strong> Applied to sequence data, such as text or periods of time</li>
-<li><strong>Pooling &amp; Dropout Layers:</strong> used to avoid overfitting and minimize dimensions, respectively</li>
+<li><strong>Dense (Fully Connected) layers:</strong> Every neuron connects to every neuron in the next layer</li>
+<li><strong>Convolutional (Convergent) layers:</strong> Mostly used to identify geometric sequence in images</li>
+<li><strong>Recurrent (Repetitive) layers:</strong> Applied to sequence data, such as text or periods of time</li>
+<li><strong>Pooling &amp; Dropout layers:</strong> Used to avoid overfitting and minimize dimensions, respectively</li>
 </ul>
 <div id="fig-background-05" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -298,22 +309,22 @@ Figure&nbsp;5: K-means behavior illustrated on simple synthetic datasets with di
 <img src="./images/ann.png" class="img-fluid figure-img" style="width:80.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-background-05-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;6: A diagram of a feedforward artificial neural network illustrating the flow of data through input, hidden, and output layers.
+Figure&nbsp;6: A diagram of a feedforward artificial neural network illustrating the flow of data through input, hidden, and output layers. Figure by <span class="citation" data-cites="medium_nn101_part1">Generative AI (<a href="#ref-medium_nn101_part1" role="doc-biblioref">2025</a>)</span>.
 </figcaption>
 </figure>
 </div>
 <p><em>AWS</em> states that “individual nodes can be simple, but when connected in a dense network, they solve complex problems.” Supervised learning, in which the network is trained on labeled data (e.g., displaying computer images labeled “cat” until it learns to identify a cat), is traditionally the most well-known use of this design. The data isn’t always labeled, though. This leads us to unsupervised techniques such as clustering.</p>
 </section>
 <section id="neural-networks-in-clustering" class="level4" data-number="2.5.2">
-<h4 data-number="2.5.2" class="anchored" data-anchor-id="neural-networks-in-clustering"><span class="header-section-number">2.5.2</span> Neural Networks in Clustering</h4>
-<p>Clustering is a key method in unsupervised learning, claims <em>IBM</em>. It involves “identifying distinct groups of data points” in which the machine must independently recognize patterns without the need for human assistance or pre-existing classifications. According to <em>IBM</em>, “clustering algorithms identify distinct groups of data points… such that data points in the same group are more similar to other data points in the same group than those in other groups.”</p>
-<p>A shift in architecture is necessary to combine these two concepts—by utilizing a Neural Network, which is typically supervised, with Clustering, that is unsupervised. How does the network learn if there are no labels to fix it? Standard feed-forward networks aren’t ideally suited for this, as discussed in the <em>Cross Validated (Stack Exchange)</em> forum. Rather, certain designs are needed. The usage of automatic encoders is one popular strategy that was brought up in the conversation. One contributor points out that clustering can be accomplished by “training an autoencoder… and then clustering the data in the bottom layer.” In this case, the clustering process is far more effective than attempting to group raw, high-dimensional data since the neural network learns to compress data (dimensionality reduction) into a dense representation.</p>
-<p>However, there is a more direct “neural” approach to clustering that relies on competitive learning instead of error correction which is <em>Self-Organizing Map (SOM)</em>.</p>
+<h4 data-number="2.5.2" class="anchored" data-anchor-id="neural-networks-in-clustering"><span class="header-section-number">2.5.2</span> Neural Networks in clustering</h4>
+<p>Clustering is a key method in unsupervised learning, according to <span class="citation" data-cites="ibm_clustering">IBM (<a href="#ref-ibm_clustering" role="doc-biblioref">2026</a>)</span>. It involves “identifying distinct groups of data points” in which the machine must independently recognize patterns without the need for human assistance or pre-existing classifications. According to <em>IBM</em>, “clustering algorithms identify distinct groups of data points… such that data points in the same group are more similar to other data points in the same group than those in other groups.”</p>
+<p>A shift in architecture is necessary to combine these two concepts—by utilizing a Neural Network, which is typically supervised, with Clustering, that is unsupervised. How does the network learn if there are no labels to fix it? Standard feed-forward networks aren’t ideally suited for this, as discussed in the <span class="citation" data-cites="stackexchange_ann_clustering">Stack Exchange forum (<a href="#ref-stackexchange_ann_clustering" role="doc-biblioref">2015</a>)</span>. Rather, certain designs are needed. The usage of automatic encoders is one popular strategy that was brought up in the conversation. One contributor points out that clustering can be accomplished by “training an autoencoder… and then clustering the data in the bottom layer.” In this case, the clustering process is far more effective than attempting to group raw, high-dimensional data since the neural network learns to compress data (dimensionality reduction) into a dense representation.</p>
+<p>However, there is a more direct “neural” approach to clustering that relies on competitive learning instead of error correction which is <em>Self-Organizing Map</em>.</p>
 </section>
 </section>
 <section id="self-organizing-maps-som" class="level3" data-number="2.6">
 <h3 data-number="2.6" class="anchored" data-anchor-id="self-organizing-maps-som"><span class="header-section-number">2.6</span> Self-Organizing Maps (SOM)</h3>
-<p>According to <span class="citation" data-cites="geeksforgeeks_som">GeeksforGeeks (<a href="#ref-geeksforgeeks_som" role="doc-biblioref">2025</a>)</span>, a Self-Organizing Map is an unsupervised neural network algorithm that maps high-dimensional data to a lower dimensional grid making interpretation and visualization of the data easier. It follows both competitive and collaborative learning to fit a dataset using neighborhood defining parameters and functions to not only update the best matching unit of a given input data but also its neighborhood with a decay over a certain number of epochs. The learning process is performed in the following steps:</p>
+<p>According to <span class="citation" data-cites="geeksforgeeks_som">GeeksforGeeks (<a href="#ref-geeksforgeeks_som" role="doc-biblioref">2025</a>)</span>, a <em>Self-Organizing Map (SOM)</em> is an unsupervised neural network algorithm that maps high-dimensional data to a lower dimensional grid making interpretation and visualization of the data easier. It follows both competitive and collaborative learning to fit a dataset using neighborhood defining parameters and functions to not only update the best matching unit of a given input data but also its neighborhood with a decay over a certain number of epochs. The learning process is performed in the following steps:</p>
 <ol type="1">
 <li><strong>Setup:</strong> The grid of the SOM is defined by its dimensions and hyperparameters such as the neighborhood settings.</li>
 <li><strong>Initialization:</strong> The weights (the positions in the <span class="math inline">\(N\)</span>-dimensional space) of the grid nodes are initialized randomly.</li>
@@ -444,7 +455,8 @@ Figure&nbsp;8: Comparison of identified clusters and ground truth labels of peng
 </section>
 <section id="experiment-2-representation-learning-via-self-organizing-map" class="level3" data-number="4.5">
 <h3 data-number="4.5" class="anchored" data-anchor-id="experiment-2-representation-learning-via-self-organizing-map"><span class="header-section-number">4.5</span> Experiment 2: Representation learning via Self-Organizing Map</h3>
-<p>The <code>MiniSom</code> class from the <code>minisom</code> library was used to learn the representation of the dataset. First the dataset was temporarily limited to two features and was treated as it had arbitrary dimensionality. The fitted map exhibited a topographic error of less than 1% (0.3%) confirming that the map is mathematically smooth and has effectively preserved the neighborhood relationships of the original high-dimensional data. Knowing this, we can visualize the flattened map of the SOM, the so-called two-dimensional U-matrix that displays the SOM grid with colors according to the average distance of the neighbors for each node represented as pixels, as depicted in <a href="#fig-som-learning-01-01" class="quarto-xref">Figure&nbsp;9</a>. Although the quantization error is also small, being 0.39, considering the standardized feature space with small dimensionality, this suggest that the map itself does not hug the data points closely as <a href="#fig-som-learning-01-02" class="quarto-xref">Figure&nbsp;10</a> verifies this. Rather, with this configuration, the map behaves like a “principal curve” or a thick snake, winding through the center of the data density.</p>
+<p>The <code>MiniSom</code> class from the <code>minisom</code> library was used to learn the representation of the dataset.</p>
+<p>First the dataset was temporarily limited to two features and was treated as it had arbitrary dimensionality. The fitted map exhibited a topographic error of less than 1% (0.3%) confirming that the map is mathematically smooth and has effectively preserved the neighborhood relationships of the original high-dimensional data. Knowing this, we can visualize the flattened map of the SOM, the so-called two-dimensional U-matrix that displays the SOM grid with colors according to the average distance of the neighbors for each node represented as pixels, as depicted in <a href="#fig-som-learning-01-01" class="quarto-xref">Figure&nbsp;9</a>. Although the quantization error is also small, being 0.39, considering the standardized feature space with small dimensionality, this suggest that the map itself does not hug the data points closely as <a href="#fig-som-learning-01-02" class="quarto-xref">Figure&nbsp;10</a> verifies this. Rather, with this configuration, the map behaves like a “principal curve” or a thick snake, winding through the center of the data density.</p>
 <div id="fig-som-learning-01-01" class="quarto-float quarto-figure quarto-figure-center anchored" width="95%">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-som-learning-01-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -530,7 +542,7 @@ Figure&nbsp;16
 </section>
 <section id="experiment-3-clustering-via-segmenting-the-self-organizing-map-representation" class="level3" data-number="4.6">
 <h3 data-number="4.6" class="anchored" data-anchor-id="experiment-3-clustering-via-segmenting-the-self-organizing-map-representation"><span class="header-section-number">4.6</span> Experiment 3: Clustering via segmenting the Self-Organizing Map representation</h3>
-<p>The SOM representation itself discretizes the dataset yet if non-linear patterns are to be captured a larger, more flexible grid is required, by which it is expected that a real cluster will be covered by multiple nodes of the SOM grid. Therefore, we may apply <em>Agglomerative Clustering</em> on the learned representation to find clusters in it on a higher level. These cluster labels, obtained through the best-matching unit (BMU), then can be used for each data point, as depicted in <a href="#fig-som-clustering-01-01" class="quarto-xref">Figure&nbsp;17</a> and <a href="#fig-som-clustering-02-01" class="quarto-xref">Figure&nbsp;18</a> for the SOM with manually selected and optimized hyperparameters, respectively.</p>
+<p>The SOM representation itself discretizes the dataset yet if non-linear patterns are to be captured a larger, more flexible grid is required, by which it is expected that a real cluster will be covered by multiple nodes of the SOM grid. Therefore, we may apply <em>Agglomerative Clustering</em> on the learned representation to find clusters in it on a higher level. These cluster labels, obtained through the best-matching unit (BMU), then can be used for each data point, as depicted in <a href="#fig-som-clustering-01-01" class="quarto-xref">Figure&nbsp;17</a> and <a href="#fig-som-clustering-02-01" class="quarto-xref">Figure&nbsp;18</a> for the SOM with the manually selected and optimized hyperparameters, respectively.</p>
 <div id="fig-som-clustering-01-01" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-som-clustering-01-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -609,7 +621,7 @@ Table&nbsp;1: Performance evaluation of the clustering approaches.
 <section id="enhancement-of-the-som-visual" class="level3" data-number="4.8">
 <h3 data-number="4.8" class="anchored" data-anchor-id="enhancement-of-the-som-visual"><span class="header-section-number">4.8</span> Enhancement of the SOM visual</h3>
 <p>Since the traditional visuals of the SOM can sometimes be challenging to interpret, and cross referencing the two separate maps may be error prone, an enhanced SOM visual is created using the <code>lilypond</code> library (<span class="citation" data-cites="balogh_lilypond">Balogh (<a href="#ref-balogh_lilypond" role="doc-biblioref">2025</a>)</span>), which provides a more intuitive way to visualize the SOM representation. The traditional approach is displayed in <a href="#fig-som-enhancement-01" class="quarto-xref">Figure&nbsp;19</a>, while the enhanced version is depicted in <a href="#fig-som-enhancement-02-01" class="quarto-xref">Figure&nbsp;20</a>.</p>
-<p>Besides, a novel, the so called rhizome layer, is added in <a href="#fig-som-enhancement-02-02" class="quarto-xref">Figure&nbsp;21</a>, to visualize the edges between <span class="math inline">\(1st\)</span> and <span class="math inline">\(2nd\)</span> BMU pairs implied by the data points: all connections and only those violating the neighborhood constraint, in each subplot, respectively.</p>
+<p>Besides, an additional layer is created in <a href="#fig-som-enhancement-02-02" class="quarto-xref">Figure&nbsp;21</a>, to visualize the edges between <span class="math inline">\(1st\)</span> and <span class="math inline">\(2nd\)</span> BMU pairs implied by the data points: all connections and only those violating the neighborhood constraint, in each subplot, respectively.</p>
 <div id="fig-som-enhancement-01" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-som-enhancement-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -645,6 +657,9 @@ Figure&nbsp;21
 </section>
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-aws_neural_network" class="csl-entry" role="listitem">
+Amazon Web Services (AWS). 2026. <span>“What Is a Neural Network?”</span> 2026. <a href="https://aws.amazon.com/what-is/neural-network/">https://aws.amazon.com/what-is/neural-network/</a>.
+</div>
 <div id="ref-balogh_lilypond" class="csl-entry" role="listitem">
 Balogh, Matthew. 2025. <span>“Lilypond: Intuitive Visualization Tool for High-Dimensional Data Using Self-Organizing Maps.”</span> 2025. <a href="https://github.com/matthew-balogh/lilypond">https://github.com/matthew-balogh/lilypond</a>.
 </div>
@@ -656,6 +671,24 @@ Ellison, Tori, and Julie Deeke. 2025. <span>“Data Science Exploration: A Secon
 </div>
 <div id="ref-geeksforgeeks_som" class="csl-entry" role="listitem">
 GeeksforGeeks. 2025. <span>“Self Organizing Maps – Kohonen Maps.”</span> 2025. <a href="https://www.geeksforgeeks.org/python/self-organising-maps-kohonen-maps/">https://www.geeksforgeeks.org/python/self-organising-maps-kohonen-maps/</a>.
+</div>
+<div id="ref-gfg_ann_layers" class="csl-entry" role="listitem">
+———. 2026. <span>“Layers in Artificial Neural Networks (ANN).”</span> 2026. <a href="https://www.geeksforgeeks.org/deep-learning/layers-in-artificial-neural-networks-ann/">https://www.geeksforgeeks.org/deep-learning/layers-in-artificial-neural-networks-ann/</a>.
+</div>
+<div id="ref-medium_nn101_part1" class="csl-entry" role="listitem">
+Generative AI. 2025. <span>“Neural Networks 101: A Simple Guide for Absolute Beginners (Part&nbsp;1).”</span> 2025. <a href="https://medium.com/@genai.works/neural-networks-101-a-simple-guide-for-absolute-beginners-part-1-e897666cc20f">https://medium.com/@genai.works/neural-networks-101-a-simple-guide-for-absolute-beginners-part-1-e897666cc20f</a>.
+</div>
+<div id="ref-ibm_clustering" class="csl-entry" role="listitem">
+IBM. 2026. <span>“What Is Clustering?”</span> 2026. <a href="https://www.ibm.com/think/topics/clustering">https://www.ibm.com/think/topics/clustering</a>.
+</div>
+<div id="ref-scikit_learn_clustering_doc" class="csl-entry" role="listitem">
+Scikit-learn developers. 2026a. <span>“Clustering — Scikit-Learn 1.8.0 Documentation.”</span> 2026. <a href="https://scikit-learn.org/stable/modules/clustering.html#k-means">https://scikit-learn.org/stable/modules/clustering.html#k-means</a>.
+</div>
+<div id="ref-scikit_learn_doc" class="csl-entry" role="listitem">
+———. 2026b. <span>“Scikit-Learn: Machine Learning in Python.”</span> 2026. <a href="https://scikit-learn.org/">https://scikit-learn.org/</a>.
+</div>
+<div id="ref-stackexchange_ann_clustering" class="csl-entry" role="listitem">
+Stack Exchange forum. 2015. <span>“How Can an Artificial Neural Network (ANN) Be Used for Unsupervised Clustering?”</span> 2015. <a href="https://stats.stackexchange.com/questions/140148/how-can-an-artificial-neural-network-ann-be-used-for-unsupervised-clustering">https://stats.stackexchange.com/questions/140148/how-can-an-artificial-neural-network-ann-be-used-for-unsupervised-clustering</a>.
 </div>
 </div></section></div></main>
 <!-- /main column -->
